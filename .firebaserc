@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "esn-speakers": {
+      "hosting": {
+        "speakers-list": [
+          "esn-speakers"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "esn-speakers"
+  }
+}
