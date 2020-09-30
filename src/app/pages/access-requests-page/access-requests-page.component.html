@@ -1,0 +1,19 @@
+<h1>Access requests</h1>
+<div gdAuto gdColumns="repeat(auto-fit, minmax(350px, 1fr))" gdGap="1rem">
+  <mat-card *ngFor="let request of requests$ | async">
+    <mat-card-header>
+      <img src="{{ request.user.photoURL }}" alt="Profile" matCardAvatar />
+      <mat-card-title>{{ request.user.displayName }}</mat-card-title>
+      <mat-card-subtitle>{{ request.user.section }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-actions>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="approveRequest(request)"
+      >
+        Approve and give access
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

@@ -46,9 +46,15 @@ exports.casTicket = functions.https.onRequest(async (req, res) => {
     functions.logger.debug('Updated user: ', uid);
   }
   const userRef = admin.firestore().collection('users').doc(uid);
+  const savedUser = await userRef.get();
+  let permissions = {};
+  if (!savedUser.exists) {
+    permissions = { isAdmin: false, isCt: false, hasAccess: false };
+  }
   await userRef.set(
     {
       ...firebaseUser,
+      uid,
       nationality: userdata.attributes.nationality,
       firstName: userdata.attributes.first,
       lastName: userdata.attributes.last,
@@ -59,6 +65,7 @@ exports.casTicket = functions.https.onRequest(async (req, res) => {
       country: userdata.attributes.country,
       roles: userdata.attributes.roles,
       fullRoles: userdata.attributes.extended_roles,
+      ...permissions,
     },
     { merge: true }
   );
@@ -66,5 +73,8 @@ exports.casTicket = functions.https.onRequest(async (req, res) => {
     .auth()
     .createCustomToken(uid)
     .catch((err) => res.json(err));
+  const redirectTarget = !!devMode
+    ? `http://localhost:4200/callback?token=${token}`
+    : `https://esn-speakers.web.app/callback?token=${token}`;
   res.redirect(`http://localhost:4200/callback?token=${token}`);
 });

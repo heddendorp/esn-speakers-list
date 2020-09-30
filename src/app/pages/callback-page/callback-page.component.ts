@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/auth';
+import * as firebase from 'firebase/app';
 
 @Component({
   selector: 'app-callback-page',
@@ -10,11 +11,20 @@ import { AngularFireAuth } from '@angular/fire/auth';
     </p>
   `,
   styles: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CallbackPageComponent {
   constructor(route: ActivatedRoute, auth: AngularFireAuth, router: Router) {
+    const token = route.snapshot.queryParamMap.get('token');
+    if (!token) {
+      router.navigate(['/start']);
+    }
     auth
-      .signInWithCustomToken(route.snapshot.queryParamMap.get('token'))
-      .then(() => router.navigate(['/lists']));
+      .setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .then(() =>
+        auth
+          .signInWithCustomToken(token)
+          .then(() => router.navigate(['/lists']))
+      );
   }
 }

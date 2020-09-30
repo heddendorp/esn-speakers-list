@@ -1,0 +1,53 @@
+<div fxLayout="column" fxLayout.gt-sm="row" fxFlex="grow">
+  <div
+    fxHide
+    fxShow.gt-sm
+    style="
+      width: 350px;
+      padding-right: 1rem;
+      border-right: 2px grey solid;
+      padding-top: 2rem;
+      margin-right: 1rem;
+    "
+  >
+    <div
+      fxLayout="row"
+      fxLayoutAlign="space-between center"
+      style="margin-bottom: 1rem;"
+    >
+      <h1 style="margin: 0;">Lists</h1>
+      <button
+        mat-stroked-button
+        *ngIf="canCreateList$ | async"
+        (click)="createList()"
+      >
+        New List
+      </button>
+    </div>
+
+    <mat-nav-list>
+      <a
+        *ngFor="let list of lists$ | async"
+        mat-list-item
+        [routerLink]="['.', list.id]"
+        routerLinkActive="active"
+        >{{ list.name }}</a
+      >
+    </mat-nav-list>
+  </div>
+
+  <div fxHide.gt-sm style="margin-top: 2rem;">
+    <mat-form-field style="width: 100%;">
+      <mat-label>Select List</mat-label>
+      <mat-select [formControl]="listIdField">
+        <mat-option *ngFor="let list of lists$ | async" [value]="list.id">{{
+          list.name
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+  <router-outlet
+    #outlet="outlet"
+    (activate)="syncForm(outlet.activatedRoute)"
+  ></router-outlet>
+</div>

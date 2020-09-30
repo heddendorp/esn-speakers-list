@@ -1,0 +1,34 @@
+<div style="padding: 2rem;">
+  <div
+    fxLayout="column"
+    fxLayout.gt-sm="row"
+    fxLayoutAlign="center center"
+    fxLayoutGap="2rem"
+  >
+    <div style="max-width: 400px;">
+      <h1>ESN Speakers list</h1>
+      <p>
+        The speakers list app makes it easy to manage the questions in
+        discussions amongst people with ESN galaxy accounts.
+      </p>
+      <a
+        routerLink="/lists"
+        *ngIf="authenticated$ | async; else singIn"
+        mat-raised-button
+        color="primary"
+        >Go to the lists</a
+      >
+      <ng-template #singIn>
+        <p>
+          To get started log in via Galaxy. You can find the link in the top
+          bar.
+        </p>
+      </ng-template>
+    </div>
+    <img
+      src="/assets/images/sign-up.svg"
+      alt="signup illustration"
+      style="max-width: 400px;"
+    />
+  </div>
+</div>

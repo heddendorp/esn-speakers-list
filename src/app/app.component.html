@@ -1,6 +1,23 @@
-<a
-  href="https://accounts.esn.org/cas/login?service=https://us-central1-esn-speakers.cloudfunctions.net/casTicket?dev=1"
-  >trigger cas test</a
->
-
+<mat-toolbar class="mat-elevation-z6">
+  <img src="/assets/images/micro.svg" alt="🎤" style="margin-right: 1rem;" />
+  <span>Speakers List</span>
+  <span class="spacer"></span>
+  <button
+    mat-stroked-button
+    *ngIf="authenticated$ | async; else loginButton"
+    (click)="logout()"
+  >
+    Logout
+  </button>
+  <ng-template #loginButton>
+    <a
+      mat-stroked-button
+      (click)="showLoginDialog()"
+      href="https://accounts.esn.org/cas/login?service=https://us-central1-esn-speakers.cloudfunctions.net/casTicket?dev={{
+        dev
+      }}"
+      >Login with Galaxy</a
+    >
+  </ng-template>
+</mat-toolbar>
 <router-outlet></router-outlet>
