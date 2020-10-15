@@ -103,11 +103,13 @@ exports.recordVote = functions.https.onCall(
         const usedVotes = answers.docs
           .map((a) => a.data().votes.map((v) => v.uid))
           .reduce(
-            (acc, curr) => acc + curr.filter((id) => id === context.auth.uid, 0)
+            (acc, curr) =>
+              acc + curr.filter((id) => id === context.auth.uid).length,
+            0
           );
         const userDoc = await transaction.get(userRef);
         if (userDoc.data().votes <= usedVotes) {
-          throw new Error('User already used their votes.');
+          return new Error('User already used their votes.');
         }
         const answerDoc = await transaction.get(answersRef.doc(answer));
         const votes = [...answerDoc.data().votes, userDoc.data()];

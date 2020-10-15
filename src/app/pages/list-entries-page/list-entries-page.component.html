@@ -38,9 +38,7 @@
           <button
             fxFlex="grow"
             mat-stroked-button
-            [disabled]="
-              (entry.votesLeft$ | ngrxPush) <= 0 || (voting$ | ngrxPush)
-            "
+            [disabled]="(entry.votesLeft$ | async) <= 0 || (voting$ | ngrxPush)"
             *ngFor="let answer of entry.answers$ | async; trackBy: getId"
             (click)="recordVote(entry, answer)"
           >

@@ -88,7 +88,6 @@ export class ListEntriesPageComponent {
             );
           const votesLeft$ = answers$.pipe(
             withLatestFrom(this.user$),
-            tap(console.log),
             map(
               ([answers, user]) =>
                 user.votes - answers.reduce((acc, curr) => acc + curr.voted, 0)
