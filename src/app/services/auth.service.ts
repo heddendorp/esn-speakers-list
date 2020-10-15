@@ -1,25 +1,20 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import {
-  exhaustMap,
-  filter,
-  map,
-  share,
-  shareReplay,
-  switchMap,
-} from 'rxjs/operators';
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginDialogComponent } from '../components/login-dialog/login-dialog.component';
 import { Router } from '@angular/router';
+import { User } from '../models';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private readonly user;
-  private readonly authenticated;
+  private readonly user: Observable<User>;
+  private readonly authenticated: Observable<boolean>;
+
   constructor(
     private auth: AngularFireAuth,
     private dialog: MatDialog,
@@ -28,14 +23,14 @@ export class AuthService {
   ) {
     this.authenticated = auth.authState.pipe(
       map((state) => !!state),
-      shareReplay(1)
+      shareReplay()
     );
     this.user = auth.user.pipe(
       filter((user) => !!user),
       switchMap((user) =>
-        firestore.collection('users').doc(user.uid).valueChanges()
+        firestore.collection('users').doc<User>(user.uid).valueChanges()
       ),
-      shareReplay(1)
+      shareReplay()
     );
   }
 
@@ -43,13 +38,13 @@ export class AuthService {
     return this.authenticated;
   }
 
-  public get user$(): Observable<any> {
+  public get user$(): Observable<User> {
     return this.user;
   }
 
-  public async logout(): Promise<any> {
+  public async logout(): Promise<void> {
     await this.auth.signOut();
-    return await this.router.navigate(['/start']);
+    await this.router.navigate(['/start']);
   }
 
   public showLoginDialog(): void {

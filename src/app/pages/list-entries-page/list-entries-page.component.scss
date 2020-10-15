@@ -1,0 +1,44 @@
+@import '~@angular/material/theming';
+
+:host {
+  display: block;
+  position: relative;
+  padding: 1rem;
+  flex: 1;
+}
+
+mat-card {
+  position: relative;
+  &.procedural {
+    background: #ffebee;
+  }
+  &.poll {
+    background: #e3f2fd;
+  }
+  &.active {
+    @include mat-elevation(6);
+    border: 2px solid gray;
+  }
+  span.tag {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    border-radius: 4px;
+    border: 1px solid lightgray;
+    font-size: smaller;
+    padding: 0 4px;
+    background: white;
+  }
+  .answer-column {
+    padding: 8px;
+    border-radius: 8px;
+    border: 2px solid lightgray;
+  }
+}
+
+button[mat-fab] {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 1;
+}

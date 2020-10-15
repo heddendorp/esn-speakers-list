@@ -1,0 +1,210 @@
+<ng-container *ngrxLet="list$; let list">
+  <h1 fxHide fxShow.gt-sm>{{ list.name }}</h1>
+  <button
+    mat-fab
+    (click)="addEntry()"
+    [disabled]="!(isCt$ | async) && !list.isOpen"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+  <div fxLayout="column" fxLayoutGap="1rem" *ngrxLet="user$; let user">
+    <mat-card
+      *ngFor="let entry of entries$ | async; trackBy: getId"
+      [class.active]="list.activeItem === entry.id"
+      class="{{ entry.type }}"
+    >
+      <span class="tag">{{ entry.type }}</span>
+      <mat-card-header>
+        <img src="{{ entry.user.photoURL }}" alt="Profile" matCardAvatar />
+        <mat-card-title>{{ entry.user.displayName }}</mat-card-title>
+        <mat-card-subtitle>{{ entry.user.section }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content *ngIf="entry.type !== EntryType.POLL">
+        <p>
+          {{ entry.text }}
+        </p>
+        <ng-container *ngIf="entry.answer">
+          <h3>Answer</h3>
+          <p>{{ entry.answer }}</p>
+        </ng-container>
+      </mat-card-content>
+      <mat-card-content
+        *ngIf="entry.type === EntryType.POLL"
+        fxLayout="column"
+        fxLayoutGap=".5rem"
+      >
+        <p>{{ entry.text }}</p>
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap=".5rem">
+          <button
+            fxFlex="grow"
+            mat-stroked-button
+            [disabled]="
+              (entry.votesLeft$ | ngrxPush) <= 0 || (voting$ | ngrxPush)
+            "
+            *ngFor="let answer of entry.answers$ | async; trackBy: getId"
+            (click)="recordVote(entry, answer)"
+          >
+            {{ answer.text }}
+            <span *ngIf="answer.voted">x{{ answer.voted }}</span>
+          </button>
+        </div>
+        <p>You have {{ entry.votesLeft$ | ngrxPush }} votes left.</p>
+        <p class="mat-caption" *ngIf="voting$ | ngrxPush">Processing vote</p>
+        <div
+          fxLayout="column"
+          fxLayout.gt-sm="row"
+          fxLayoutGap="1rem"
+          *ngIf="isCt$ | ngrxPush"
+        >
+          <div
+            fxLayout="column"
+            class="answer-column"
+            *ngFor="let answer of entry.answers$ | async; trackBy: getId"
+          >
+            <h3>{{ answer.text }} ({{ answer.votes.length }} votes)</h3>
+            <span *ngFor="let vote of answer.votes">{{
+              vote.displayName
+            }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+      <mat-card-actions>
+        <button
+          mat-stroked-button
+          *ngIf="entry.type === EntryType.QUESTION"
+          (click)="addReaction(entry)"
+        >
+          Add reaction
+        </button>
+        <button
+          mat-stroked-button
+          *ngIf="
+            entry.type !== EntryType.POLL &&
+            ((isCt$ | ngrxPush) || entry.user.uid === user.uid)
+          "
+          (click)="updateText(entry)"
+        >
+          Update text
+        </button>
+        <ng-container *ngIf="isCt$ | ngrxPush">
+          <button
+            mat-stroked-button
+            *ngIf="!entry.done"
+            [disabled]="list.activeItem === entry.id"
+            (click)="setActiveEntry(entry)"
+          >
+            Set active
+          </button>
+          <button
+            mat-stroked-button
+            *ngIf="entry.type !== EntryType.POLL"
+            (click)="addAnswer(entry)"
+          >
+            Record Answer
+          </button>
+          <button
+            *ngIf="!entry.done"
+            mat-stroked-button
+            [matMenuTriggerFor]="menu"
+          >
+            Set done
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="setEntryDone(entry, 'Answered')">
+              Answered
+            </button>
+            <button mat-menu-item (click)="setEntryDone(entry, 'Off Topic')">
+              Off topic
+            </button>
+            <button mat-menu-item (click)="setEntryDone(entry, 'Duplicate')">
+              Duplicate
+            </button>
+          </mat-menu>
+        </ng-container>
+      </mat-card-actions>
+      <ng-container *ngIf="entry.reactions$ | async as reactions">
+        <mat-card-footer
+          style="margin: 0;"
+          *ngIf="entry.type === EntryType.QUESTION && reactions.length"
+        >
+          <h2>Reactions</h2>
+          <div
+            *ngFor="let reaction of entry.reactions$ | async; trackBy: getId"
+          >
+            {{ reaction.user.displayName }}: {{ reaction.text }}
+          </div>
+        </mat-card-footer>
+      </ng-container>
+    </mat-card>
+  </div>
+  <h2 style="margin-top: 2rem;">Completed entries</h2>
+  <div fxLayout="column" fxLayoutGap="1rem" *ngrxLet="user$; let user">
+    <mat-card *ngFor="let entry of doneEntries$ | async; trackBy: getId">
+      <span class="tag">{{ entry.type }}</span>
+      <mat-card-header>
+        <img src="{{ entry.user.photoURL }}" alt="Profile" matCardAvatar />
+        <mat-card-title>{{ entry.user.displayName }}</mat-card-title>
+        <mat-card-subtitle>{{ entry.user.section }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content *ngIf="entry.type !== EntryType.POLL">
+        <p>
+          {{ entry.text }}
+        </p>
+        <ng-container *ngIf="entry.answer">
+          <h3>Answer</h3>
+          <p>{{ entry.answer }}</p>
+        </ng-container>
+        <em *ngIf="entry.doneComment"
+          >Closed because: {{ entry.doneComment }}</em
+        >
+      </mat-card-content>
+      <mat-card-content
+        *ngIf="entry.type === EntryType.POLL"
+        fxLayout="column"
+        fxLayoutGap=".5rem"
+      >
+        <p>{{ entry.text }}</p>
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap="1rem">
+          <div
+            fxLayout="column"
+            class="answer-column"
+            *ngFor="let answer of entry.answers$ | async; trackBy: getId"
+          >
+            <h3>{{ answer.text }} ({{ answer.votes.length }} votes)</h3>
+            <span *ngFor="let vote of answer.votes">{{
+              vote.displayName
+            }}</span>
+          </div>
+        </div>
+        <em *ngIf="entry.doneComment"
+          >Closed because: {{ entry.doneComment }}</em
+        >
+      </mat-card-content>
+      <mat-card-actions *ngIf="isCt$ | ngrxPush">
+        <button mat-stroked-button (click)="updateText(entry)">
+          Update text
+        </button>
+        <button
+          mat-stroked-button
+          *ngIf="entry.type !== EntryType.POLL"
+          (click)="addAnswer(entry)"
+        >
+          Record Answer
+        </button>
+      </mat-card-actions>
+      <ng-container *ngIf="entry.reactions$ | async as reactions">
+        <mat-card-footer
+          style="margin: 0;"
+          *ngIf="entry.type === EntryType.QUESTION && reactions.length"
+        >
+          <h2>Reactions</h2>
+          <div
+            *ngFor="let reaction of entry.reactions$ | async; trackBy: getId"
+          >
+            {{ reaction.user.displayName }}: {{ reaction.text }}
+          </div>
+        </mat-card-footer>
+      </ng-container>
+    </mat-card>
+  </div>
+</ng-container>

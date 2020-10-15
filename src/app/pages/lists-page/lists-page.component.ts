@@ -1,17 +1,13 @@
-import {
-  Component,
-  OnInit,
-  ChangeDetectionStrategy,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { map, switchMap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { NewListDialogComponent } from '../../components/new-list-dialog/new-list-dialog.component';
 import { FormControl } from '@angular/forms';
-import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { List, User } from '../../models';
 
 @Component({
   selector: 'app-lists-page',
@@ -20,10 +16,11 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListsPageComponent {
-  public user$: Observable<any>;
-  public lists$;
-  public canCreateList$;
+  public user$: Observable<User>;
+  public lists$: Observable<List[]>;
+  public isCt$: Observable<boolean>;
   public listIdField = new FormControl();
+
   constructor(
     private auth: AuthService,
     private store: AngularFirestore,
@@ -34,16 +31,18 @@ export class ListsPageComponent {
       router.navigate(['lists', id])
     );
     this.user$ = auth.user$;
-    this.canCreateList$ = this.user$.pipe(
-      map((user) => user.isAdmin || user.isCt)
-    );
+    this.isCt$ = this.user$.pipe(map((user) => user.isAdmin || user.isCt));
     this.lists$ = auth.user$.pipe(
       switchMap((user) => {
         if (user.isCt || user.isAdmin) {
-          return store.collection('lists').valueChanges({ idField: 'id' });
+          return store
+            .collection<List>('lists')
+            .valueChanges({ idField: 'id' });
         } else {
           return store
-            .collection('lists', (ref) => ref.where('isOpen', '==', true))
+            .collection<List>('lists', (ref) =>
+              ref.where('isVisible', '==', true)
+            )
             .valueChanges({ idField: 'id' });
         }
       })
@@ -52,13 +51,13 @@ export class ListsPageComponent {
 
   async createList(): Promise<void> {
     const listName = await this.dialog
-      .open(NewListDialogComponent)
+      .open<NewListDialogComponent, any, string>(NewListDialogComponent)
       .afterClosed()
       .toPromise();
     if (listName) {
       await this.store
         .collection('lists')
-        .add({ name: listName, isHidden: true, isOpen: false });
+        .add({ name: listName, isVisible: false, isOpen: false });
     }
   }
 
@@ -66,5 +65,33 @@ export class ListsPageComponent {
     this.listIdField.setValue(route.snapshot.paramMap.get('id'), {
       emitEvent: false,
     });
+  }
+
+  async showList(list: any): Promise<void> {
+    await this.store
+      .collection('lists')
+      .doc<List>(list.id)
+      .update({ isVisible: true });
+  }
+
+  async hideList(list: any): Promise<void> {
+    await this.store
+      .collection('lists')
+      .doc<List>(list.id)
+      .update({ isVisible: false, isOpen: false });
+  }
+
+  async openList(list: any): Promise<void> {
+    await this.store
+      .collection('lists')
+      .doc<List>(list.id)
+      .update({ isVisible: true, isOpen: true });
+  }
+
+  async closeList(list: any): Promise<void> {
+    await this.store
+      .collection('lists')
+      .doc<List>(list.id)
+      .update({ isOpen: false });
   }
 }

@@ -8,18 +8,18 @@ import {
   redirectLoggedInTo,
   redirectUnauthorizedTo,
 } from '@angular/fire/auth-guard';
-import { RequestAccessPageComponent } from './pages/request-access-page/request-access-page.component';
 import { AccessGuard } from './services/access.guard';
-import { AccessRequestsPageComponent } from './pages/access-requests-page/access-requests-page.component';
+import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { AdminGuard } from './services/admin.guard';
-import { QuestionsPageComponent } from './pages/questions-page/questions-page.component';
+import { ListEntriesPageComponent } from './pages/list-entries-page/list-entries-page.component';
+import { RequestAccessPageComponent } from './pages/request-access-page/request-access-page.component';
 
 const routes: Routes = [
   { path: 'start', component: StartPageComponent },
   { path: 'request-access', component: RequestAccessPageComponent },
   {
-    path: 'access-requests',
-    component: AccessRequestsPageComponent,
+    path: 'admin',
+    component: AdminPageComponent,
     // canActivate: [AdminGuard],
   },
   {
@@ -33,7 +33,7 @@ const routes: Routes = [
     component: ListsPageComponent,
     canActivate: [AngularFireAuthGuard, AccessGuard],
     data: { authGuardPipe: () => redirectUnauthorizedTo(['/start']) },
-    children: [{ path: ':id', component: QuestionsPageComponent }],
+    children: [{ path: ':id', component: ListEntriesPageComponent }],
   },
   { path: '', pathMatch: 'full', redirectTo: 'lists' },
 ];

@@ -1,0 +1,64 @@
+<h1>Users</h1>
+<div gdAuto gdColumns="repeat(auto-fit, minmax(350px, 1fr))" gdGap="1rem">
+  <mat-card *ngFor="let user of users$ | async">
+    <mat-card-header>
+      <img src="{{ user.photoURL }}" alt="Profile" matCardAvatar />
+      <mat-card-title>{{ user.displayName }}</mat-card-title>
+      <mat-card-subtitle>{{ user.section }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        {{ user.hasAccess ? '✅' : '❌' }} Access ||
+        {{ user.isCt ? '✅' : '❌' }} Chairing Team || {{ user.votes }} Votes
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-stroked-button
+        (click)="setAccess(user, false)"
+        *ngIf="user.hasAccess"
+      >
+        Remove Access
+      </button>
+      <button
+        mat-stroked-button
+        (click)="setAccess(user, true)"
+        *ngIf="!user.hasAccess"
+      >
+        Give Access
+      </button>
+      <button mat-stroked-button (click)="setCt(user, false)" *ngIf="user.isCt">
+        Remove from Chairing team
+      </button>
+      <button mat-stroked-button (click)="setCt(user, true)" *ngIf="!user.isCt">
+        Add to chairing team
+      </button>
+      <button mat-stroked-button mat-button [matMenuTriggerFor]="menu">
+        Change Votes
+      </button>
+      <mat-menu #menu="matMenu">
+        <button
+          mat-menu-item
+          *ngIf="user.votes !== 0"
+          (click)="setVotes(user, 0)"
+        >
+          No vote delegation
+        </button>
+        <button
+          mat-menu-item
+          *ngIf="user.votes !== 1"
+          (click)="setVotes(user, 1)"
+        >
+          1 vote delegation
+        </button>
+        <button
+          mat-menu-item
+          *ngIf="user.votes !== 2"
+          (click)="setVotes(user, 2)"
+        >
+          2 vote delegations
+        </button>
+      </mat-menu>
+    </mat-card-actions>
+  </mat-card>
+</div>

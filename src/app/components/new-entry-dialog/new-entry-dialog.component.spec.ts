@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AccessRequestsPageComponent } from './access-requests-page.component';
+import { NewEntryDialogComponent } from './new-entry-dialog.component';
 
-describe('AccessRequestsPageComponent', () => {
-  let component: AccessRequestsPageComponent;
-  let fixture: ComponentFixture<AccessRequestsPageComponent>;
+describe('NewQuestionDialogComponent', () => {
+  let component: NewEntryDialogComponent;
+  let fixture: ComponentFixture<NewEntryDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ AccessRequestsPageComponent ]
+      declarations: [ NewEntryDialogComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(AccessRequestsPageComponent);
+    fixture = TestBed.createComponent(NewEntryDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

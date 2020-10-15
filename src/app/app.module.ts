@@ -11,25 +11,36 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 import { StartPageComponent } from './pages/start-page/start-page.component';
-import { AngularFireAuthGuardModule } from '@angular/fire/auth-guard';
 import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatDialogModule } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DEFAULT_OPTIONS,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
-import { RequestAccessPageComponent } from './pages/request-access-page/request-access-page.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { AccessRequestsPageComponent } from './pages/access-requests-page/access-requests-page.component';
+import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { MatCardModule } from '@angular/material/card';
 import { NewListDialogComponent } from './components/new-list-dialog/new-list-dialog.component';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
-import { QuestionsPageComponent } from './pages/questions-page/questions-page.component';
 import { ReactiveComponentModule } from '@ngrx/component';
 import { MatIconModule } from '@angular/material/icon';
-import { NewQuestionDialogComponent } from './components/new-question-dialog/new-question-dialog.component';
+import { NewEntryDialogComponent } from './components/new-entry-dialog/new-entry-dialog.component';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { MatMenuModule } from '@angular/material/menu';
+import { ListEntriesPageComponent } from './pages/list-entries-page/list-entries-page.component';
+import { RequestAccessPageComponent } from './pages/request-access-page/request-access-page.component';
+import { ProvideTextDialogComponent } from './components/provide-text-dialog/provide-text-dialog.component';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import {
+  ErrorStateMatcher,
+  ShowOnDirtyErrorStateMatcher,
+} from '@angular/material/core';
+import { AngularFireFunctionsModule } from '@angular/fire/functions';
 
 @NgModule({
   declarations: [
@@ -39,10 +50,11 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
     StartPageComponent,
     LoginDialogComponent,
     RequestAccessPageComponent,
-    AccessRequestsPageComponent,
+    AdminPageComponent,
     NewListDialogComponent,
-    QuestionsPageComponent,
-    NewQuestionDialogComponent,
+    NewEntryDialogComponent,
+    ListEntriesPageComponent,
+    ProvideTextDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,7 +65,7 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
     AngularFireAuthModule,
-    ReactiveComponentModule,
+    AngularFireFunctionsModule,
     MatToolbarModule,
     MatDialogModule,
     MatButtonModule,
@@ -63,8 +75,26 @@ import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
     MatListModule,
     MatIconModule,
     MatBottomSheetModule,
+    MatMenuModule,
+    ReactiveComponentModule,
   ],
-  providers: [],
+  providers: [
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },
+    { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
+    {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {
+        minWidth: '50vw',
+        closeOnNavigation: true,
+        disableClose: false,
+        hasBackdrop: true,
+      },
+    },
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: { appearance: 'outline' },
+    },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

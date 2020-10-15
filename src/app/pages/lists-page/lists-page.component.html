@@ -16,23 +16,56 @@
       style="margin-bottom: 1rem;"
     >
       <h1 style="margin: 0;">Lists</h1>
-      <button
-        mat-stroked-button
-        *ngIf="canCreateList$ | async"
-        (click)="createList()"
-      >
+      <button mat-stroked-button *ngIf="isCt$ | async" (click)="createList()">
         New List
       </button>
     </div>
 
     <mat-nav-list>
-      <a
+      <mat-list-item
         *ngFor="let list of lists$ | async"
-        mat-list-item
-        [routerLink]="['.', list.id]"
         routerLinkActive="active"
-        >{{ list.name }}</a
       >
+        <mat-icon mat-list-icon *ngIf="isCt$ | async">{{
+          list.isVisible
+            ? list.isOpen
+              ? 'lock_open'
+              : 'lock'
+            : 'visibility_off'
+        }}</mat-icon>
+        <a [routerLink]="['.', list.id]" mat-line>
+          {{ list.name }}
+        </a>
+        <button
+          [disabled]="!(isCt$ | async)"
+          mat-icon-button
+          [mat-menu-trigger-for]="menu"
+        >
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+          <button
+            mat-menu-item
+            (click)="showList(list)"
+            *ngIf="!list.isVisible"
+          >
+            <mat-icon>visibility</mat-icon>
+            <span>Make visible</span>
+          </button>
+          <button mat-menu-item (click)="hideList(list)" *ngIf="list.isVisible">
+            <mat-icon>visibility_off</mat-icon>
+            <span>Hide {{ list.isOpen ? 'and close' : '' }}</span>
+          </button>
+          <button mat-menu-item (click)="openList(list)" *ngIf="!list.isOpen">
+            <mat-icon>lock_open</mat-icon>
+            <span>Open {{ list.isVisible ? '' : 'and show' }}</span>
+          </button>
+          <button mat-menu-item (click)="closeList(list)" *ngIf="list.isOpen">
+            <mat-icon>lock</mat-icon>
+            <span>Close</span>
+          </button>
+        </mat-menu>
+      </mat-list-item>
     </mat-nav-list>
   </div>
 

@@ -29,13 +29,18 @@ exports.casTicket = functions.https.onRequest(async (req, res) => {
   const firebaseUser = {
     email: userdata.attributes.mail,
     emailVerified: !!userdata.attributes.mail,
-    phoneNumber: `+${userdata.attributes.telephone}`,
     displayName: `${userdata.attributes.first} ${userdata.attributes.last}`,
     photoURL: userdata.attributes.picture,
   };
   functions.logger.debug({ userdata });
   functions.logger.debug({ firebaseUser });
+  functions.logger.debug({ user });
   if (!user) {
+    functions.logger.debug('Creating user');
+    functions.logger.debug({
+      uid,
+      ...firebaseUser,
+    });
     await admin.auth().createUser({
       uid,
       ...firebaseUser,
@@ -47,25 +52,25 @@ exports.casTicket = functions.https.onRequest(async (req, res) => {
   }
   const userRef = admin.firestore().collection('users').doc(uid);
   const savedUser = await userRef.get();
-  let permissions = {};
+  let extraData = {};
   if (!savedUser.exists) {
-    permissions = { isAdmin: false, isCt: false, hasAccess: false };
+    extraData = { isAdmin: false, isCt: false, hasAccess: false, votes: 0 };
   }
   await userRef.set(
     {
       ...firebaseUser,
       uid,
-      nationality: userdata.attributes.nationality,
+      // nationality: userdata.attributes.nationality || '',
       firstName: userdata.attributes.first,
       lastName: userdata.attributes.last,
-      birthday: parse(userdata.attributes.birthdate, 'dd/LL/yyyy', new Date()),
-      gender: userdata.attributes.gender,
+      // birthday: parse(userdata.attributes.birthdate, 'dd/LL/yyyy', new Date()),
+      // gender: userdata.attributes.gender,
       section: userdata.attributes.section,
       sectionId: userdata.attributes.sc,
       country: userdata.attributes.country,
       roles: userdata.attributes.roles,
       fullRoles: userdata.attributes.extended_roles,
-      ...permissions,
+      ...extraData,
     },
     { merge: true }
   );
@@ -73,8 +78,44 @@ exports.casTicket = functions.https.onRequest(async (req, res) => {
     .auth()
     .createCustomToken(uid)
     .catch((err) => res.json(err));
-  const redirectTarget = !!devMode
-    ? `http://localhost:4200/callback?token=${token}`
-    : `https://esn-speakers.web.app/callback?token=${token}`;
-  res.redirect(`http://localhost:4200/callback?token=${token}`);
+  const redirectTarget =
+    devMode === 1
+      ? `http://localhost:4200/callback?token=${token}`
+      : `https://esn-speakers.web.app/callback?token=${token}`;
+  res.redirect(redirectTarget);
 });
+
+exports.recordVote = functions.https.onCall(
+  async ({ list, entry, answer }, context) => {
+    functions.logger.debug({ list, entry, answer });
+    functions.logger.debug(context.auth);
+    const answersRef = app
+      .firestore()
+      .collection('lists')
+      .doc(list)
+      .collection('entries')
+      .doc(entry)
+      .collection('answers');
+    const userRef = app.firestore().collection('users').doc(context.auth.uid);
+    try {
+      await app.firestore().runTransaction(async (transaction) => {
+        const answers = await transaction.get(answersRef);
+        const usedVotes = answers.docs
+          .map((a) => a.data().votes.map((v) => v.uid))
+          .reduce(
+            (acc, curr) => acc + curr.filter((id) => id === context.auth.uid, 0)
+          );
+        const userDoc = await transaction.get(userRef);
+        if (userDoc.data().votes <= usedVotes) {
+          throw new Error('User already used their votes.');
+        }
+        const answerDoc = await transaction.get(answersRef.doc(answer));
+        const votes = [...answerDoc.data().votes, userDoc.data()];
+        transaction.update(answersRef.doc(answer), { votes });
+      });
+    } catch (e) {
+      console.log('Transaction failure:', e);
+    }
+    return 'Vote Logged';
+  }
+);

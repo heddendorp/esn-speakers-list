@@ -1,0 +1,41 @@
+<h2>New List entry</h2>
+<mat-form-field style="width: 100%">
+  <mat-label>Entry Type</mat-label>
+  <mat-select [formControl]="typeSelection">
+    <mat-option *ngFor="let option of availableTypes" [value]="option.type">{{
+      option.name
+    }}</mat-option>
+  </mat-select>
+</mat-form-field>
+<form [formGroup]="entryForm" (ngSubmit)="submit()" fxLayout="column">
+  <mat-form-field>
+    <mat-label>Entry Text</mat-label>
+    <textarea matInput formControlName="text" type="text" cols="5"></textarea>
+    <mat-hint *ngIf="!(pollSelected | async)"
+      >This can be added after submission</mat-hint
+    >
+  </mat-form-field>
+  <ng-container formArrayName="answers" *ngIf="pollSelected | async">
+    <div *ngFor="let answer of answers.controls; let i = index" fxLayout="row">
+      <mat-form-field fxFlex="grow">
+        <mat-label>Answer {{ i + 1 }}</mat-label>
+        <input matInput [formControlName]="i" type="text" />
+      </mat-form-field>
+      <button mat-icon-button (click)="removeAnswer(i)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </div>
+    <button
+      mat-stroked-button
+      (click)="addAnswer()"
+      [disabled]="answers.length >= 4"
+    >
+      Add answer
+    </button>
+  </ng-container>
+  <div fxLayout="row" fxLayoutAlign="end" style="margin-top: 1rem">
+    <button mat-stroked-button color="primary" [disabled]="entryForm.invalid">
+      Submit question
+    </button>
+  </div>
+</form>
