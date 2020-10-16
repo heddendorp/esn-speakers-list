@@ -23,6 +23,6 @@ export class AdminGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    return this.auth.user$.pipe(map((user) => user.hasAccess));
+    return this.auth.user$.pipe(map((user) => user.isCt));
   }
 }

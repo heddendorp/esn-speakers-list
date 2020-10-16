@@ -1,9 +1,43 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      allow read, write: if
-          request.time < timestamp.date(2020, 10, 25);
+
+  	function isCt() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isCt == true || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+    }
+
+    function isCtOrCreator(entry) {
+    	let isCreator = entry.user.uid == request.auth.uid;
+    	return isCreator || isCt();
+    }
+
+    function isCtOrUser(user) {
+    	let isUser = user.uid == request.auth.uid;
+    	return isUser || isCt();
+    }
+
+    match /users/{user} {
+    	allow read: if isCtOrUser(resource.data);
+      allow update: if isCt();
+    }
+
+    match /lists/{list} {
+    	allow read: if (request.auth != null && resource.data.isVisible) || isCt();
+      allow write: if isCt();
+      match /entries/{entry} {
+      		allow read: if request.auth != null;
+      		allow create: if (request.auth != null && get(/databases/$(database)/documents/lists/$(list)).data.isOpen) || isCt();
+      		allow update: if isCtOrCreator(resource.data);
+          match /reactions/{reaction} {
+          	allow read: if request.auth != null;
+          	allow create: if (request.auth != null && get(/databases/$(database)/documents/lists/$(list)).data.isOpen) || isCt();
+      			allow update: if isCtOrCreator(resource.data);
+          }
+          match /answers/{answer} {
+          	allow read: if request.auth != null;
+            allow create: if isCt();
+          }
+      }
     }
   }
 }

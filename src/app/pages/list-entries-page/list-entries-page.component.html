@@ -125,6 +125,8 @@
       <ng-container *ngIf="entry.reactions$ | async as reactions">
         <mat-card-footer
           style="margin: 0"
+          fxLayout="column"
+          fxLayoutGap="1rem"
           *ngIf="entry.type === EntryType.QUESTION && reactions.length"
         >
           <h2>Reactions</h2>

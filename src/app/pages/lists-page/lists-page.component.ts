@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { map, switchMap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { NewListDialogComponent } from '../../components/new-list-dialog/new-list-dialog.component';
 import { FormControl } from '@angular/forms';
@@ -36,14 +36,26 @@ export class ListsPageComponent {
       switchMap((user) => {
         if (user.isCt || user.isAdmin) {
           return store
-            .collection<List>('lists', ref => ref.orderBy('name'))
-            .valueChanges({ idField: 'id' });
+            .collection<List>('lists', (ref) => ref.orderBy('name'))
+            .valueChanges({ idField: 'id' })
+            .pipe(
+              catchError((err) => {
+                console.log(err);
+                return of([]);
+              })
+            );
         } else {
           return store
             .collection<List>('lists', (ref) =>
               ref.where('isVisible', '==', true).orderBy('name')
             )
-            .valueChanges({ idField: 'id' });
+            .valueChanges({ idField: 'id' })
+            .pipe(
+              catchError((err) => {
+                console.log(err);
+                return of([]);
+              })
+            );
         }
       })
     );

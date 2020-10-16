@@ -15,12 +15,15 @@ import { ListEntriesPageComponent } from './pages/list-entries-page/list-entries
 import { RequestAccessPageComponent } from './pages/request-access-page/request-access-page.component';
 
 const routes: Routes = [
-  { path: 'start', component: StartPageComponent },
+  {
+    path: 'start',
+    component: StartPageComponent,
+  },
   { path: 'request-access', component: RequestAccessPageComponent },
   {
     path: 'admin',
     component: AdminPageComponent,
-    // canActivate: [AdminGuard],
+    canActivate: [AdminGuard],
   },
   {
     path: 'callback',

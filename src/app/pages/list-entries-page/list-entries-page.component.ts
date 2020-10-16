@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import {
   Answer,
   EntryType,
@@ -10,7 +10,13 @@ import {
   Reaction,
   User,
 } from '../../models';
-import { first, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import {
+  catchError,
+  first,
+  map,
+  switchMap,
+  withLatestFrom,
+} from 'rxjs/operators';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { NewEntryDialogComponent } from '../../components/new-entry-dialog/new-entry-dialog.component';
 import { AuthService } from '../../services/auth.service';
@@ -53,7 +59,11 @@ export class ListEntriesPageComponent {
             map((list) => ({
               ...list,
               id: params.get('id'),
-            }))
+            })),
+            catchError((err) => {
+              console.log(err);
+              return of(null);
+            })
           )
       )
     );
@@ -92,7 +102,13 @@ export class ListEntriesPageComponent {
             .collection<Reaction>('reactions', (ref) =>
               ref.orderBy('timestamp', 'asc')
             )
-            .valueChanges({ idField: 'id' });
+            .valueChanges({ idField: 'id' })
+            .pipe(
+              catchError((err) => {
+                console.log(err);
+                return of([]);
+              })
+            );
           return {
             ...entry,
             answers$,
