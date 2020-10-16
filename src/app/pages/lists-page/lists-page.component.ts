@@ -36,12 +36,12 @@ export class ListsPageComponent {
       switchMap((user) => {
         if (user.isCt || user.isAdmin) {
           return store
-            .collection<List>('lists')
+            .collection<List>('lists', ref => ref.orderBy('name'))
             .valueChanges({ idField: 'id' });
         } else {
           return store
             .collection<List>('lists', (ref) =>
-              ref.where('isVisible', '==', true)
+              ref.where('isVisible', '==', true).orderBy('name')
             )
             .valueChanges({ idField: 'id' });
         }

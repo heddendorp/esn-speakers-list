@@ -1,4 +1,4 @@
-<ng-container *ngrxLet="list$; let list">
+<div *ngrxLet="list$; let list" [ngStyle.gt-xs]="{ padding: '1rem' }">
   <h1 fxHide fxShow.gt-sm>{{ list.name }}</h1>
   <button
     mat-fab
@@ -9,7 +9,7 @@
   </button>
   <div fxLayout="column" fxLayoutGap="1rem" *ngrxLet="user$; let user">
     <mat-card
-      *ngFor="let entry of entries$ | async; trackBy: getId"
+      *ngFor="let entry of entries$ | ngrxPush; trackBy: getId"
       [class.active]="list.activeItem === entry.id"
       class="{{ entry.type }}"
     >
@@ -38,7 +38,7 @@
           <button
             fxFlex="grow"
             mat-stroked-button
-            [disabled]="(entry.votesLeft$ | async) <= 0 || (voting$ | ngrxPush)"
+            [disabled]="(entry.cantVote$ | ngrxPush) || (voting$ | ngrxPush)"
             *ngFor="let answer of entry.answers$ | async; trackBy: getId"
             (click)="recordVote(entry, answer)"
           >
@@ -56,13 +56,15 @@
         >
           <div
             fxLayout="column"
+            fxLayoutGap=".5rem"
             class="answer-column"
             *ngFor="let answer of entry.answers$ | async; trackBy: getId"
           >
             <h3>{{ answer.text }} ({{ answer.votes.length }} votes)</h3>
-            <span *ngFor="let vote of answer.votes">{{
-              vote.displayName
-            }}</span>
+            <span *ngFor="let vote of answer.votes">
+              {{ vote.displayName }} <br />
+              <small>{{ vote.section }}</small>
+            </span>
           </div>
         </div>
       </mat-card-content>
@@ -122,20 +124,48 @@
       </mat-card-actions>
       <ng-container *ngIf="entry.reactions$ | async as reactions">
         <mat-card-footer
-          style="margin: 0;"
+          style="margin: 0"
           *ngIf="entry.type === EntryType.QUESTION && reactions.length"
         >
           <h2>Reactions</h2>
           <div
+            class="reaction"
+            fxLayout="row"
+            fxLayoutAlign="start start"
+            fxLayoutGap=".5rem"
             *ngFor="let reaction of entry.reactions$ | async; trackBy: getId"
           >
-            {{ reaction.user.displayName }}: {{ reaction.text }}
+            <img src="{{ entry.user.photoURL }}" alt="Profile" fxHide.xs />
+            <div fxFlex="grow">
+              <strong>{{ reaction.user.displayName }}:&nbsp;</strong
+              >{{ reaction.text }}
+              <ng-container *ngIf="reaction.answer"
+                ><br /><strong>Answer:&nbsp;</strong
+                >{{ reaction.answer }}</ng-container
+              >
+            </div>
+            <button
+              fxFlex="noshrink"
+              mat-icon-button
+              *ngIf="(isCt$ | ngrxPush) || reaction.user.uid === user.uid"
+              (click)="updateText(entry, reaction)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              fxFlex="noshrink"
+              mat-stroked-button
+              *ngIf="isCt$ | ngrxPush"
+              (click)="addAnswer(entry, reaction)"
+            >
+              Record Answer
+            </button>
           </div>
         </mat-card-footer>
       </ng-container>
     </mat-card>
   </div>
-  <h2 style="margin-top: 2rem;">Completed entries</h2>
+  <h2 style="margin-top: 2rem">Completed entries</h2>
   <div fxLayout="column" fxLayoutGap="1rem" *ngrxLet="user$; let user">
     <mat-card *ngFor="let entry of doneEntries$ | async; trackBy: getId">
       <span class="tag">{{ entry.type }}</span>
@@ -192,7 +222,7 @@
       </mat-card-actions>
       <ng-container *ngIf="entry.reactions$ | async as reactions">
         <mat-card-footer
-          style="margin: 0;"
+          style="margin: 0"
           *ngIf="entry.type === EntryType.QUESTION && reactions.length"
         >
           <h2>Reactions</h2>
@@ -205,4 +235,4 @@
       </ng-container>
     </mat-card>
   </div>
-</ng-container>
+</div>

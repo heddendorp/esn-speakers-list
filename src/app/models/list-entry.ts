@@ -28,6 +28,7 @@ interface PollEntry extends BaseEntry {
   type: EntryType.POLL;
   answers$: Observable<Answer[]>;
   votesLeft$: Observable<number>;
+  cantVote$: Observable<boolean>;
 }
 
 export enum EntryType {
@@ -37,6 +38,7 @@ export enum EntryType {
 }
 
 export interface Reaction {
+  answer: string;
   id: string;
   user: User;
   text: string;

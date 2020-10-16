@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import {
   Answer,
   EntryType,
@@ -10,23 +10,13 @@ import {
   Reaction,
   User,
 } from '../../models';
-import {
-  first,
-  map,
-  share,
-  shareReplay,
-  switchMap,
-  tap,
-  withLatestFrom,
-} from 'rxjs/operators';
+import { first, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { NewEntryDialogComponent } from '../../components/new-entry-dialog/new-entry-dialog.component';
 import { AuthService } from '../../services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ProvideTextDialogComponent } from '../../components/provide-text-dialog/provide-text-dialog.component';
-import { dashCaseToCamelCase } from '@angular/compiler/src/util';
 import { AngularFireFunctions } from '@angular/fire/functions';
-import { SubjectSubscriber } from 'rxjs/internal/Subject';
 
 @Component({
   selector: 'app-list-entries-page',
@@ -42,6 +32,7 @@ export class ListEntriesPageComponent {
   public isCt$: Observable<boolean>;
   public voting$ = new BehaviorSubject(false);
   public EntryType = EntryType;
+
   constructor(
     auth: AuthService,
     route: ActivatedRoute,
@@ -83,8 +74,7 @@ export class ListEntriesPageComponent {
                   ...answer,
                   voted: answer.votes.filter((u) => u.uid === user.uid).length,
                 }))
-              ),
-              share()
+              )
             );
           const votesLeft$ = answers$.pipe(
             withLatestFrom(this.user$),
@@ -93,6 +83,7 @@ export class ListEntriesPageComponent {
                 user.votes - answers.reduce((acc, curr) => acc + curr.voted, 0)
             )
           );
+          const cantVote$ = votesLeft$.pipe(map((votes) => votes <= 0));
           const reactions$ = store
             .collection('lists')
             .doc(params.get('id'))
@@ -107,6 +98,7 @@ export class ListEntriesPageComponent {
             answers$,
             reactions$,
             votesLeft$,
+            cantVote$,
           };
         })
       );
@@ -134,7 +126,7 @@ export class ListEntriesPageComponent {
             ref.where('done', '==', true).orderBy('timestamp', 'asc')
           )
           .valueChanges({ idField: 'id' })
-          .pipe(prepareEntries(params), tap(console.log))
+          .pipe(prepareEntries(params))
       )
     );
   }
@@ -219,39 +211,72 @@ export class ListEntriesPageComponent {
       .update({ done: true, doneComment });
   }
 
-  public async updateText(entry: ListEntry): Promise<void> {
+  public async updateText(
+    entry: ListEntry,
+    reaction: Reaction = null
+  ): Promise<void> {
     const list = await this.list$.pipe(first()).toPromise();
     const text = await this.dialog
       .open(ProvideTextDialogComponent, {
         data: {
-          title: `Update Text for question by ${entry.user.displayName}`,
-          content: entry.text,
+          title: `Update Text for ${reaction ? 'reaction' : 'question'} by ${
+            reaction ? reaction.user.displayName : entry.user.displayName
+          }`,
+          content: reaction ? reaction.text : entry.text,
         },
       })
       .afterClosed()
       .toPromise();
-    if (text) {
+    if (text && !reaction) {
       await this.store
         .collection('lists')
         .doc(list.id)
         .collection('entries')
         .doc<ListEntry>(entry.id)
         .update({ text });
+    } else if (text && reaction) {
+      await this.store
+        .collection('lists')
+        .doc(list.id)
+        .collection('entries')
+        .doc<ListEntry>(entry.id)
+        .collection('reactions')
+        .doc<Reaction>(reaction.id)
+        .update({ text });
     }
   }
 
-  public async addAnswer(entry: ListEntry): Promise<void> {
+  public async addAnswer(
+    entry: ListEntry,
+    reaction: Reaction = null
+  ): Promise<void> {
     const list = await this.list$.pipe(first()).toPromise();
     const answer = await this.dialog
       .open(ProvideTextDialogComponent, {
         data: {
-          title: `Update Text for question by ${entry.user.displayName}`,
-          content: 'answer' in entry ? entry.answer : '',
+          title: `Update Answer for ${reaction ? 'reaction' : 'question'} by ${
+            reaction ? reaction.user.displayName : entry.user.displayName
+          }`,
+          content:
+            'answer' in entry
+              ? reaction
+                ? reaction.answer
+                : entry.answer
+              : '',
         },
       })
       .afterClosed()
       .toPromise();
-    if (answer) {
+    if (answer && reaction) {
+      await this.store
+        .collection('lists')
+        .doc(list.id)
+        .collection('entries')
+        .doc<ListEntry>(entry.id)
+        .collection('reactions')
+        .doc<Reaction>(reaction.id)
+        .update({ answer });
+    } else if (answer) {
       await this.store
         .collection('lists')
         .doc(list.id)

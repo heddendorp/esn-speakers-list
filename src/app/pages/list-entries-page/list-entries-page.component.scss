@@ -3,7 +3,6 @@
 :host {
   display: block;
   position: relative;
-  padding: 1rem;
   flex: 1;
 }
 
@@ -33,6 +32,15 @@ mat-card {
     padding: 8px;
     border-radius: 8px;
     border: 2px solid lightgray;
+  }
+  .reaction {
+    img {
+      height: 40px;
+      width: 40px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      object-fit: cover;
+    }
   }
 }
 
