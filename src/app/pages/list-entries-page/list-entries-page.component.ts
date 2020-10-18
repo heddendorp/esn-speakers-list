@@ -23,6 +23,7 @@ import { AuthService } from '../../services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ProvideTextDialogComponent } from '../../components/provide-text-dialog/provide-text-dialog.component';
 import { AngularFireFunctions } from '@angular/fire/functions';
+import { ListProtocolDialogComponent } from '../../components/list-protocol-dialog/list-protocol-dialog.component';
 
 @Component({
   selector: 'app-list-entries-page',
@@ -90,7 +91,8 @@ export class ListEntriesPageComponent {
             withLatestFrom(this.user$),
             map(
               ([answers, user]) =>
-                user.votes - answers.reduce((acc, curr) => acc + curr.voted, 0)
+                (entry.randomQuestion ? 1 : user.votes) -
+                answers.reduce((acc, curr) => acc + curr.voted, 0)
             )
           );
           const cantVote$ = votesLeft$.pipe(map((votes) => votes <= 0));
@@ -111,6 +113,8 @@ export class ListEntriesPageComponent {
             );
           return {
             ...entry,
+            // @ts-ignore
+            timestamp: entry.timestamp.toDate(),
             answers$,
             reactions$,
             votesLeft$,
@@ -194,6 +198,7 @@ export class ListEntriesPageComponent {
         user,
         text: res.text,
         type: res.type,
+        randomQuestion: res.randomQuestion,
         done: false,
         timestamp: new Date(),
       };
@@ -314,5 +319,13 @@ export class ListEntriesPageComponent {
       .toPromise();
     console.log(result);
     this.voting$.next(false);
+  }
+
+  public async getProtocol(): Promise<void> {
+    const list = await this.list$.pipe(first()).toPromise();
+    const entries = await this.doneEntries$.pipe(first()).toPromise();
+    await this.dialog.open(ListProtocolDialogComponent, {
+      data: { list, entries },
+    });
   }
 }

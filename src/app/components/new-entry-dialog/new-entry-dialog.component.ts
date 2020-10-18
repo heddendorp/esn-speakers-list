@@ -50,6 +50,7 @@ export class NewEntryDialogComponent {
     }
     this.entryForm = fb.group({
       text: [''],
+      randomQuestion: [false, Validators.required],
       answers: fb.array([
         ['Yes', Validators.required],
         ['No', Validators.required],

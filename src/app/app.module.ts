@@ -41,6 +41,9 @@ import {
   ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
 import { AngularFireFunctionsModule } from '@angular/fire/functions';
+import { ListProtocolDialogComponent } from './components/list-protocol-dialog/list-protocol-dialog.component';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -55,6 +58,7 @@ import { AngularFireFunctionsModule } from '@angular/fire/functions';
     NewEntryDialogComponent,
     ListEntriesPageComponent,
     ProvideTextDialogComponent,
+    ListProtocolDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -77,6 +81,8 @@ import { AngularFireFunctionsModule } from '@angular/fire/functions';
     MatBottomSheetModule,
     MatMenuModule,
     ReactiveComponentModule,
+    ClipboardModule,
+    MatCheckboxModule,
   ],
   providers: [
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },

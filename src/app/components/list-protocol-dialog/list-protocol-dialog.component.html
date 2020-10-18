@@ -1,0 +1,40 @@
+<h1 mat-dialog-title>Protocol for {{ data.list.name }}</h1>
+<mat-dialog-content style="user-select: all;">
+  <h1>{{ data.list.name }}</h1>
+  <ng-container *ngFor="let entry of data.entries">
+    <p>
+      ({{ entry.timestamp | date: 'H:mm' }})&nbsp;<strong
+        >{{ entry.user.displayName }} - {{ entry.user.section }}</strong
+      >
+      -
+      {{ entry.text }}
+    </p>
+    <p *ngIf="entry.answer"><strong>A:&nbsp;</strong>{{ entry.answer }}</p>
+    <ul *ngIf="entry.type === EntryType.POLL">
+      <li *ngFor="let answer of entry.answers$ | ngrxPush">
+        <strong>{{ answer.text }}: </strong>{{ answer.votes.length }}
+      </li>
+    </ul>
+    <ng-container *ngFor="let reaction of entry.reactions$ | ngrxPush">
+      <p>
+        <strong
+          >R: {{ reaction.user.displayName }} -
+          {{ reaction.user.section }}</strong
+        >
+        -
+        {{ reaction.text }}
+      </p>
+      <p *ngIf="reaction.answer">
+        <strong>A:&nbsp;</strong>{{ reaction.answer }}
+      </p>
+    </ng-container>
+    <br />
+  </ng-container>
+</mat-dialog-content>
+<mat-dialog-actions
+  ><p>
+    Just click the text, copy it and paste it into your favorite text editor.
+    All text will automatically selected.
+    <strong>Only done entries are in the protocol!</strong>
+  </p></mat-dialog-actions
+>

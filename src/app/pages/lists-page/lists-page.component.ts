@@ -69,7 +69,12 @@ export class ListsPageComponent {
     if (listName) {
       await this.store
         .collection('lists')
-        .add({ name: listName, isVisible: false, isOpen: false });
+        .add({
+          name: listName,
+          isVisible: false,
+          isOpen: false,
+          timestamp: new Date(),
+        });
     }
   }
 

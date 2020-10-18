@@ -96,9 +96,16 @@ exports.recordVote = functions.https.onCall(
       .collection('entries')
       .doc(entry)
       .collection('answers');
+    const entryRef = app
+      .firestore()
+      .collection('lists')
+      .doc(list)
+      .collection('entries')
+      .doc(entry);
     const userRef = app.firestore().collection('users').doc(context.auth.uid);
     try {
-      await app.firestore().runTransaction(async (transaction) => {
+      return await app.firestore().runTransaction(async (transaction) => {
+        const entry = await transaction.get(entryRef);
         const answers = await transaction.get(answersRef);
         const usedVotes = answers.docs
           .map((a) => a.data().votes.map((v) => v.uid))
@@ -108,16 +115,25 @@ exports.recordVote = functions.https.onCall(
             0
           );
         const userDoc = await transaction.get(userRef);
-        if (userDoc.data().votes <= usedVotes) {
-          return new Error('User already used their votes.');
+        functions.logger.debug(entry.data());
+        functions.logger.debug(
+          'Votes gone: ',
+          (entry.data().randomQuestion ? 1 : userDoc.data().votes) <= usedVotes
+        );
+        if (
+          (entry.data().randomQuestion ? 1 : userDoc.data().votes) <= usedVotes
+        ) {
+          throw new Error('User already used their votes.');
         }
         const answerDoc = await transaction.get(answersRef.doc(answer));
         const votes = [...answerDoc.data().votes, userDoc.data()];
+        functions.logger.debug({ votes });
         transaction.update(answersRef.doc(answer), { votes });
+        return 'Vote Logged';
       });
     } catch (e) {
       console.log('Transaction failure:', e);
+      return e;
     }
-    return 'Vote Logged';
   }
 );

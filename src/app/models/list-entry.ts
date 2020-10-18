@@ -8,6 +8,7 @@ interface BaseEntry {
   type: EntryType;
   text: string;
   user: User;
+  randomQuestion: boolean;
   done: boolean;
   doneComment?: string;
   timestamp: Date;
