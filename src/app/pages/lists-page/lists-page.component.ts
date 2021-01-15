@@ -1,13 +1,16 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { catchError, map, switchMap } from 'rxjs/operators';
+import { catchError, first, map, shareReplay, switchMap } from 'rxjs/operators';
 import { Observable, of } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { NewListDialogComponent } from '../../components/new-list-dialog/new-list-dialog.component';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { List, User } from '../../models';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { isPlatformServer } from '@angular/common';
+import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-lists-page',
@@ -19,14 +22,20 @@ export class ListsPageComponent {
   public user$: Observable<User>;
   public lists$: Observable<List[]>;
   public isCt$: Observable<boolean>;
+  isHandset$: Observable<boolean>;
   public listIdField = new FormControl();
 
   constructor(
+    private breakpointObserver: BreakpointObserver,
     private auth: AuthService,
     private store: AngularFirestore,
     private dialog: MatDialog,
     router: Router
   ) {
+    this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Large).pipe(
+      map((result) => !result.matches),
+      shareReplay(1)
+    );
     this.listIdField.valueChanges.subscribe((id) =>
       router.navigate(['lists', id])
     );
@@ -59,6 +68,19 @@ export class ListsPageComponent {
         }
       })
     );
+  }
+
+  async closeSidenav(drawer: MatSidenav): Promise<void> {
+    const isHandset = await this.breakpointObserver
+      .observe(Breakpoints.Handset)
+      .pipe(
+        map((result) => result.matches),
+        first()
+      )
+      .toPromise();
+    if (isHandset) {
+      await drawer.close();
+    }
   }
 
   async createList(): Promise<void> {

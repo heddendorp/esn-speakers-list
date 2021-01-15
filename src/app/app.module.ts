@@ -45,6 +45,7 @@ import { ListProtocolDialogComponent } from './components/list-protocol-dialog/l
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FastEntrySheetComponent } from './components/fast-entry-sheet/fast-entry-sheet.component';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -82,6 +83,7 @@ import { FastEntrySheetComponent } from './components/fast-entry-sheet/fast-entr
     MatIconModule,
     MatBottomSheetModule,
     MatMenuModule,
+    MatSidenavModule,
     ReactiveComponentModule,
     ClipboardModule,
     MatCheckboxModule,

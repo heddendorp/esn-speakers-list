@@ -1,4 +1,12 @@
-<h1>Users</h1>
+<div
+  fxLayout="row"
+  fxLayoutGap="1rem"
+  fxLayoutAlign="start center"
+  style="margin-bottom: 1rem"
+>
+  <h1 style="margin: 0">Users</h1>
+  <a mat-stroked-button routerLink="/">Go to app</a>
+</div>
 <div gdAuto gdColumns="repeat(auto-fit, minmax(350px, 1fr))" gdGap="1rem">
   <mat-card *ngFor="let user of users$ | async">
     <mat-card-header>

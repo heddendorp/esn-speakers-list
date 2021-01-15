@@ -1,6 +1,6 @@
-<div *ngrxLet="list$; let list" [ngStyle.gt-xs]="{ padding: '1rem' }">
+<div *ngrxLet="list$; let list" style="padding: 1rem">
   <div fxLayout="row" fxLayoutAlign="space-between start">
-    <h1 fxHide fxShow.gt-sm>{{ list.name }}</h1>
+    <h1 style="margin-left: 40px">{{ list.name }}</h1>
     <button
       mat-stroked-button
       color="accent"
@@ -138,7 +138,7 @@
       </mat-card-actions>
       <ng-container *ngIf="entry.reactions$ | async as reactions">
         <mat-card-footer
-          style="margin: 0;"
+          style="margin: 0"
           fxLayout="column"
           fxLayoutGap="1rem"
           *ngIf="entry.type === EntryType.QUESTION && reactions.length"
@@ -181,7 +181,7 @@
       </ng-container>
     </mat-card>
   </div>
-  <h2 style="margin-top: 2rem;">Completed entries</h2>
+  <h2 style="margin-top: 2rem">Completed entries</h2>
   <div fxLayout="column" fxLayoutGap="1rem" *ngrxLet="user$; let user">
     <mat-card *ngFor="let entry of doneEntries$ | ngrxPush; trackBy: getId">
       <span class="tag">{{ entry.type }}</span>
@@ -240,7 +240,7 @@
       </mat-card-actions>
       <ng-container *ngIf="entry.reactions$ | ngrxPush as reactions">
         <mat-card-footer
-          style="margin: 0;"
+          style="margin: 0"
           fxLayout="column"
           fxLayoutGap="1rem"
           *ngIf="entry.type === EntryType.QUESTION && reactions.length"
