@@ -13,16 +13,18 @@
     <div
       fxLayout="row"
       fxLayoutAlign="space-between center"
-      style="margin-bottom: 1rem;"
+      style="margin-bottom: 1rem"
     >
-      <h1 style="margin: 0;">Lists</h1>
+      <h1 style="margin: 0">Lists</h1>
       <button mat-stroked-button *ngIf="isCt$ | async" (click)="createList()">
         New List
       </button>
     </div>
 
     <mat-nav-list>
-      <mat-list-item
+      <a
+        mat-list-item
+        [routerLink]="['.', list.id]"
         *ngFor="let list of lists$ | async"
         routerLinkActive="active"
       >
@@ -33,11 +35,12 @@
               : 'lock'
             : 'visibility_off'
         }}</mat-icon>
-        <a [routerLink]="['.', list.id]" mat-line>
+        <a mat-line>
           {{ list.name }}
         </a>
         <button
           [disabled]="!(isCt$ | async)"
+          (click)="stopClick($event)"
           mat-icon-button
           [mat-menu-trigger-for]="menu"
         >
@@ -65,12 +68,12 @@
             <span>Close</span>
           </button>
         </mat-menu>
-      </mat-list-item>
+      </a>
     </mat-nav-list>
   </div>
 
-  <div fxHide.gt-sm style="margin-top: 2rem;">
-    <mat-form-field style="width: 100%;">
+  <div fxHide.gt-sm style="margin-top: 2rem">
+    <mat-form-field style="width: 100%">
       <mat-label>Select List</mat-label>
       <mat-select [formControl]="listIdField">
         <mat-option *ngFor="let list of lists$ | async" [value]="list.id">{{

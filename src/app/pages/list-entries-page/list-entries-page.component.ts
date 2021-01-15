@@ -24,6 +24,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ProvideTextDialogComponent } from '../../components/provide-text-dialog/provide-text-dialog.component';
 import { AngularFireFunctions } from '@angular/fire/functions';
 import { ListProtocolDialogComponent } from '../../components/list-protocol-dialog/list-protocol-dialog.component';
+import { FastEntrySheetComponent } from '../../components/fast-entry-sheet/fast-entry-sheet.component';
 
 @Component({
   selector: 'app-list-entries-page',
@@ -187,21 +188,43 @@ export class ListEntriesPageComponent {
     const isCt = await this.isCt$.pipe(first()).toPromise();
     const user = await this.user$.pipe(first()).toPromise();
     const list = await this.list$.pipe(first()).toPromise();
-    const res = await this.bottomSheet
-      .open(NewEntryDialogComponent, {
-        data: { isCt },
-      })
-      .afterDismissed()
-      .toPromise();
+    let res;
+    if (isCt) {
+      res = await this.bottomSheet
+        .open(NewEntryDialogComponent, {
+          data: { isCt },
+        })
+        .afterDismissed()
+        .toPromise();
+    } else {
+      res = await this.bottomSheet
+        .open(FastEntrySheetComponent)
+        .afterDismissed()
+        .toPromise();
+    }
     if (res) {
-      const entry: Partial<ListEntry> = {
-        user,
-        text: res.text,
-        type: res.type,
-        randomQuestion: res.randomQuestion,
-        done: false,
-        timestamp: new Date(),
-      };
+      let entry: Partial<ListEntry>;
+      if (isCt) {
+        entry = {
+          user,
+          text: res.text,
+          type: res.type,
+          randomQuestion: res.randomQuestion,
+          done: false,
+          timestamp: new Date(),
+          fresh: false,
+        };
+      } else {
+        entry = {
+          user,
+          text: 'Currently writing text ...',
+          type: res.type,
+          randomQuestion: false,
+          done: false,
+          timestamp: new Date(),
+          fresh: true,
+        };
+      }
       const entriesRef = this.store
         .collection('lists')
         .doc(list.id)
@@ -212,6 +235,10 @@ export class ListEntriesPageComponent {
         await Promise.all(
           res.answers.map((text) => answersRef.add({ text, votes: [] }))
         );
+      }
+      if (!isCt) {
+        const entryWithId = { ...entry, id: entryRef.id } as ListEntry;
+        await this.updateText(entryWithId);
       }
     }
   }

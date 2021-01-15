@@ -12,6 +12,7 @@ interface BaseEntry {
   done: boolean;
   doneComment?: string;
   timestamp: Date;
+  fresh: boolean;
 }
 
 interface QuestionEntry extends BaseEntry {

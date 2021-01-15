@@ -67,14 +67,12 @@ export class ListsPageComponent {
       .afterClosed()
       .toPromise();
     if (listName) {
-      await this.store
-        .collection('lists')
-        .add({
-          name: listName,
-          isVisible: false,
-          isOpen: false,
-          timestamp: new Date(),
-        });
+      await this.store.collection('lists').add({
+        name: listName,
+        isVisible: false,
+        isOpen: false,
+        timestamp: new Date(),
+      });
     }
   }
 
@@ -110,5 +108,11 @@ export class ListsPageComponent {
       .collection('lists')
       .doc<List>(list.id)
       .update({ isOpen: false });
+  }
+
+  stopClick($event: MouseEvent) {
+    $event.stopImmediatePropagation();
+    $event.stopPropagation();
+    $event.preventDefault();
   }
 }

@@ -44,6 +44,7 @@ import { AngularFireFunctionsModule } from '@angular/fire/functions';
 import { ListProtocolDialogComponent } from './components/list-protocol-dialog/list-protocol-dialog.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { FastEntrySheetComponent } from './components/fast-entry-sheet/fast-entry-sheet.component';
 
 @NgModule({
   declarations: [
@@ -59,6 +60,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     ListEntriesPageComponent,
     ProvideTextDialogComponent,
     ListProtocolDialogComponent,
+    FastEntrySheetComponent,
   ],
   imports: [
     BrowserModule,
