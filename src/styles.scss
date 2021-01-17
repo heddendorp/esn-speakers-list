@@ -19,7 +19,7 @@ $speakers-list-warn: mat-palette($mat-red);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$speakers-list-theme: mat-light-theme(
+$speakers-list-theme: mat-dark-theme(
   (
     color: (
       primary: $speakers-list-primary,
@@ -43,6 +43,10 @@ body {
 body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+.mat-drawer-backdrop.mat-drawer-shown {
+  background-color: rgba(22, 22, 22, 0.8);
 }
 
 mat-nav-list.mat-nav-list {

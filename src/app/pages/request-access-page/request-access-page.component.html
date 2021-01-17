@@ -5,13 +5,17 @@
     fxLayoutGap="1rem"
     fxLayoutAlign="center center"
   >
-    <div *ngIf="hasAccess$ | async; else noAccess" style="max-width: 400px">
+    <div
+      *ngIf="hasAccess$ | async; else noAccess"
+      style="max-width: 400px"
+      class="panel"
+    >
       <h1>You already have access to the speakers list</h1>
       <p>Feel free to head on over to the currently open lists</p>
       <a mat-raised-button routerLink="/lists">Go to lists</a>
     </div>
     <ng-template #noAccess>
-      <div style="max-width: 400px">
+      <div style="max-width: 400px" class="panel">
         <h1>Access pending</h1>
         <p>
           To participate in the speakers list you need to be approved by the

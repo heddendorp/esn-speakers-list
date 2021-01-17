@@ -1,9 +1,9 @@
-<header class="mat-elevation-z3" fxLayout="row" fxLayoutAlign="start center">
+<header class="mat-elevation-z1" fxLayout="row" fxLayoutAlign="start center">
   <img src="/assets/images/micro.svg" alt="🎤" style="margin-right: 1rem" />
   <h1>Speakers List</h1>
   <span class="spacer"></span>
   <button
-    mat-stroked-button
+    mat-flat-button
     *ngIf="authenticated$ | async; else loginButton"
     (click)="logout()"
   >
@@ -11,7 +11,7 @@
   </button>
   <ng-template #loginButton>
     <a
-      mat-stroked-button
+      mat-flat-button
       (click)="showLoginDialog()"
       href="https://accounts.esn.org/cas/login?service=https://us-central1-esn-speakers.cloudfunctions.net/casTicket?dev={{
         dev

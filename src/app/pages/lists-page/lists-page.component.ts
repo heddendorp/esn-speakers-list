@@ -32,10 +32,12 @@ export class ListsPageComponent {
     private dialog: MatDialog,
     router: Router
   ) {
-    this.isHandset$ = this.breakpointObserver.observe(Breakpoints.Large).pipe(
-      map((result) => !result.matches),
-      shareReplay(1)
-    );
+    this.isHandset$ = this.breakpointObserver
+      .observe('(max-width: 1199px)')
+      .pipe(
+        map((result) => result.matches),
+        shareReplay(1)
+      );
     this.listIdField.valueChanges.subscribe((id) =>
       router.navigate(['lists', id])
     );

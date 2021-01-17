@@ -8,15 +8,17 @@
 
 mat-card {
   position: relative;
+  background: rgba(255, 255, 255, 0.2);
+  border: solid 1px rgba(255, 255, 255, 0.3);
   &.procedural {
-    background: #ffebee;
+    background: rgb(255 162 176 / 20%);
   }
   &.poll {
-    background: #e3f2fd;
+    background: rgb(102 190 255 / 20%);
   }
   &.active {
     @include mat-elevation(6);
-    border: 2px solid gray;
+    border: solid 2px rgba(255, 255, 255, 0.8);
   }
   span.tag {
     position: absolute;
@@ -26,7 +28,7 @@ mat-card {
     border: 1px solid lightgray;
     font-size: smaller;
     padding: 0 4px;
-    background: white;
+    background: rgba(255, 255, 255, 0.2);
   }
   .answer-column {
     padding: 8px;

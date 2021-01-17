@@ -1,12 +1,7 @@
 <div *ngrxLet="list$; let list" style="padding: 1rem">
   <div fxLayout="row" fxLayoutAlign="space-between start">
     <h1 style="margin-left: 40px">{{ list.name }}</h1>
-    <button
-      mat-stroked-button
-      color="accent"
-      *ngIf="isCt$ | ngrxPush"
-      (click)="getProtocol()"
-    >
+    <button mat-stroked-button *ngIf="isCt$ | ngrxPush" (click)="getProtocol()">
       Get Protocol
     </button>
   </div>
