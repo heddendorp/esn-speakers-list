@@ -24,9 +24,6 @@ import { FormControl, Validators } from '@angular/forms';
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NewListDialogComponent implements OnInit {
+export class NewListDialogComponent {
   public nameControl = new FormControl('', Validators.required);
-  constructor() {}
-
-  ngOnInit(): void {}
 }

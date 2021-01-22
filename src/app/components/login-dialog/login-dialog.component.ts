@@ -15,8 +15,4 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   styles: [],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginDialogComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
-}
+export class LoginDialogComponent {}
