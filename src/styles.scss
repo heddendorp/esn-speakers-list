@@ -11,8 +11,8 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue. Available color palettes: https://material.io/design/color/
-$speakers-list-primary: mat-palette($mat-indigo);
-$speakers-list-accent: mat-palette($mat-pink, A200, A100, A400);
+$speakers-list-primary: mat-palette($mat-blue);
+$speakers-list-accent: mat-palette($mat-pink);
 
 // The warn palette is optional (defaults to red).
 $speakers-list-warn: mat-palette($mat-red);
@@ -25,6 +25,7 @@ $speakers-list-theme: mat-dark-theme(
       primary: $speakers-list-primary,
       accent: $speakers-list-accent,
       warn: $speakers-list-warn,
+      background: transparent,
     ),
   )
 );
@@ -38,7 +39,7 @@ $speakers-list-theme: mat-dark-theme(
 
 html,
 body {
-  min-height: 100%;
+  min-height: 100vh;
 }
 body {
   margin: 0;

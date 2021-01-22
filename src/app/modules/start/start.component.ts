@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
-  selector: 'app-start-page',
-  templateUrl: './start-page.component.html',
-  styleUrls: ['./start-page.component.scss'],
+  selector: 'app-start',
+  templateUrl: './start.component.html',
+  styleUrls: ['./start.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StartPageComponent {
+export class StartComponent {
   authenticated$: Observable<boolean>;
 
   constructor(auth: AuthService) {

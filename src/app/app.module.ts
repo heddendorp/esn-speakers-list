@@ -10,7 +10,6 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
-import { StartPageComponent } from './pages/start-page/start-page.component';
 import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {
@@ -52,7 +51,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     AppComponent,
     CallbackPageComponent,
     ListsPageComponent,
-    StartPageComponent,
     LoginDialogComponent,
     RequestAccessPageComponent,
     AdminPageComponent,

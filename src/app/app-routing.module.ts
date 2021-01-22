@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CallbackPageComponent } from './pages/callback-page/callback-page.component';
 import { ListsPageComponent } from './pages/lists-page/lists-page.component';
-import { StartPageComponent } from './pages/start-page/start-page.component';
 import {
   AngularFireAuthGuard,
   redirectLoggedInTo,
@@ -15,10 +14,6 @@ import { ListEntriesPageComponent } from './pages/list-entries-page/list-entries
 import { RequestAccessPageComponent } from './pages/request-access-page/request-access-page.component';
 
 const routes: Routes = [
-  {
-    path: 'start',
-    component: StartPageComponent,
-  },
   { path: 'request-access', component: RequestAccessPageComponent },
   {
     path: 'admin',
@@ -37,6 +32,16 @@ const routes: Routes = [
     canActivate: [AngularFireAuthGuard, AccessGuard],
     data: { authGuardPipe: () => redirectUnauthorizedTo(['/start']) },
     children: [{ path: ':id', component: ListEntriesPageComponent }],
+  },
+  {
+    path: 'start',
+    loadChildren: () =>
+      import('./modules/start/start.module').then((m) => m.StartModule),
+  },
+  {
+    path: 'learn',
+    loadChildren: () =>
+      import('./modules/learn/learn.module').then((m) => m.LearnModule),
   },
   { path: '', pathMatch: 'full', redirectTo: 'lists' },
 ];

@@ -1,0 +1,131 @@
+<div class="panel" fxLayout="column">
+  <h1 class="mat-headline">Don't Panic!</h1>
+  <h2 class="mat-subheading-1">This is going to be easy</h2>
+  <p>
+    This tutorial will show you the basics of using the speakers list so we can
+    have a nice assembly
+  </p>
+  <button mat-stroked-button (click)="nextStep()">Let's go</button>
+</div>
+
+<div *ngIf="(step$ | ngrxPush) >= 1" class="panel" fxLayout="column">
+  <h3 class="mat-subheader">This button is your friend</h3>
+  <div fxLayout="row" fxLayoutGap="1rem" fxLayoutAlign="start center">
+    <button mat-fab (click)="nextStep()">
+      <mat-icon>add</mat-icon>
+    </button>
+    <p>
+      If you want to post a question or ask something about procedures, click
+      this bright pink button. Click it now to proceed.
+    </p>
+  </div>
+</div>
+
+<ng-container *ngIf="(step$ | ngrxPush) >= 2">
+  <mat-card>
+    <span class="tag">question</span>
+    <mat-card-header>
+      <img src="/assets/images/learn/face1.png" alt="Profile" matCardAvatar />
+      <mat-card-title>Some Person</mat-card-title>
+      <mat-card-subtitle>ESN Havana</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        Hello Fronds 🖐🏼<br />
+        This is my first question and I'm just getting started.
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-stroked-button disabled>Add reaction</button>
+      <button mat-stroked-button (click)="nextStep()">Update text</button>
+    </mat-card-actions>
+  </mat-card>
+  <div class="panel">
+    <h3 class="mat-subheader">Your first question ⬆</h3>
+    <p>
+      As you can see, you just created your first question, it will have your
+      galaxy Profile picture, name and esn section. <br />Importantly, you can
+      still change the text of this question after you posted it to correct
+      typos. <br />Do that now
+    </p>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="(step$ | ngrxPush) >= 3">
+  <mat-card>
+    <span class="tag">question</span>
+    <mat-card-header>
+      <img src="/assets/images/learn/face2.png" alt="Profile" matCardAvatar />
+      <mat-card-title>Another Person</mat-card-title>
+      <mat-card-subtitle>ESN NYC</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        I really think that the ESN logo should be available in electric blue,
+        it's my favorite color of them all. <br />Can we make that happen?
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-stroked-button (click)="nextStep()">Add reaction</button>
+      <button mat-stroked-button>Update text</button>
+    </mat-card-actions>
+  </mat-card>
+  <div class="panel">
+    <h3 class="mat-subheader">Another question was posted</h3>
+    <p>
+      Others can also post questions, if you feel like you would like to add
+      something to the discussion, click "Add reaction".
+      <br />
+      As we already have so many logo variants, add you reaction now.
+    </p>
+  </div>
+</ng-container>
+<ng-container *ngIf="(step$ | ngrxPush) >= 4">
+  <mat-card>
+    <span class="tag">question</span>
+    <mat-card-header>
+      <img src="/assets/images/learn/face2.png" alt="Profile" matCardAvatar />
+      <mat-card-title>Another Person</mat-card-title>
+      <mat-card-subtitle>ESN NYC</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p>
+        I really think that the ESN logo should be available in electric blue,
+        it's my favorite color of them all. <br />Can we make that happen?
+      </p>
+      <h3>Answer</h3>
+      <p>The ESN logo already has enough variations</p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-stroked-button>Add reaction</button>
+      <button mat-stroked-button>Update text</button>
+    </mat-card-actions>
+    <mat-card-footer style="margin: 0" fxLayout="column" fxLayoutGap="1rem">
+      <h2>Reactions</h2>
+      <div
+        class="reaction"
+        fxLayout="row"
+        fxLayoutAlign="start start"
+        fxLayoutGap=".5rem"
+      >
+        <img src="/assets/images/learn/face1.png" alt="Profile" />
+        <div fxFlex="grow">
+          <strong>Some Person:&nbsp;</strong>
+          I'd also enjoy a violet version!
+          <br /><strong>Answer:&nbsp;</strong>
+          Also can't happen
+        </div>
+      </div>
+    </mat-card-footer>
+  </mat-card>
+  <div class="panel" fxLayout="column">
+    <h3 class="mat-subheader">Have a look now</h3>
+    <p>
+      As you can see, the speakers list assistants will also add answers to
+      questions and reactions so the protocol is complete.
+      <br />
+      You're good to go now!
+    </p>
+    <a mat-stroked-button routerLink="/">Back to the main Page</a>
+  </div>
+</ng-container>
