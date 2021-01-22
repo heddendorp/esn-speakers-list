@@ -27,9 +27,9 @@
 <h3 align="center">ESN Speakers list</h3>
 
   <p align="center">
-    An awesome README template to jumpstart your projects!
+    A simple, fast and easy to use app for your assembly needs
     <br />
-    <a href="https://github.com/Isigiel/esn-speakers-list" style="display: none"><strong>Explore the docs »</strong></a>
+    <a href="https://esn-speakers.web.app" style="display: none"><strong>Check it out »</strong></a>
     <br />
     <br />
     <a href="https://esn-speakers.web.app/">Visit Page</a>
@@ -67,7 +67,7 @@
 
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+[![Product Name Screen Shot][product-screenshot]](https://esn-speakers.web.app)
 
 Online (and in person) assemblies are hard to manage, to make it a little easier for ESN germany this app was created. It allows managing discussions in a convenient and intuitive way.
 
@@ -135,7 +135,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 ## Roadmap
 
-More info on the future of this project will be available soon.
+- It would be great to get an interactive tutorial going here for new people to get to know the tool.
 
 <!-- CONTRIBUTING -->
 
