@@ -14,8 +14,8 @@ export class LearnComponent implements OnInit {
 
   ngOnInit(): void {}
 
-  nextStep() {
-    this.step$.next(this.step$.value + 1);
+  setStep(step: number) {
+    this.step$.next(step);
     setTimeout(() =>
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
     );
