@@ -5,11 +5,13 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
   template: `
     <h1 mat-dialog-title>Logging in ...</h1>
     <mat-dialog-content style="overflow: hidden">
-      <img
-        src="/assets/images/waiting.svg"
-        alt="Waiting illustration"
-        style="width: 100%;"
-      />
+      <div
+        style="width: 100%; max-height: 100%"
+        fxLayout="row"
+        fxLayoutAlign="center center"
+      >
+        <img src="/assets/images/waiting.svg" alt="Waiting illustration" />
+      </div>
     </mat-dialog-content>
   `,
   styles: [],
