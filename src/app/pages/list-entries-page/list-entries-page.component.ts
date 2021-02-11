@@ -352,6 +352,7 @@ export class ListEntriesPageComponent {
     const list = await this.list$.pipe(first()).toPromise();
     const entries = await this.doneEntries$.pipe(first()).toPromise();
     await this.dialog.open(ListProtocolDialogComponent, {
+      panelClass: 'light',
       data: { list, entries },
     });
   }
