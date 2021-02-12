@@ -1,0 +1,59 @@
+<h1>App settings</h1>
+<div fxLayout="column" fxLayout.gt-md="row" fxLayoutGap="2rem">
+  <mat-card *ngrxLet="user$; let user">
+    <mat-card-header>
+      <img
+        src="{{
+          user.hidePersonalData
+            ? '/assets/images/learn/face1.png'
+            : user.photoURL
+        }}"
+        alt="Profile"
+        matCardAvatar
+      />
+      <mat-card-title>
+        {{ user.hidePersonalData ? 'Private Person' : user.displayName }}
+      </mat-card-title>
+      <mat-card-subtitle>
+        {{ user.selectedRoleText }} ({{ user.section }})
+      </mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      This is what you questions will look like. <br />
+      Settings are applied if you save them.
+    </mat-card-content>
+  </mat-card>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Personal preferences</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="settingsForm" fxLayoutGap="2rem" fxLayout="column">
+        <mat-slide-toggle formControlName="hidePersonalData"
+          >Hide my image and name</mat-slide-toggle
+        >
+        <mat-form-field>
+          <mat-label>Visible Role</mat-label>
+          <mat-select formControlName="selectedRole">
+            <mat-option
+              *ngFor="let role of availableRoles$ | ngrxPush; let i = index"
+              [value]="i"
+            >
+              {{ role }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </form>
+    </mat-card-content>
+    <mat-card-actions>
+      <button
+        mat-stroked-button
+        (click)="saveSettings()"
+        [disabled]="settingsForm.invalid"
+      >
+        Save settings
+      </button>
+    </mat-card-actions>
+  </mat-card>
+  <a mat-raised-button color="primary" routerLink="/lists">Back to the lists</a>
+</div>

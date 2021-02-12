@@ -18,7 +18,7 @@ service cloud.firestore {
 
     match /users/{user} {
     	allow read: if isCtOrUser(resource.data);
-      allow update: if isCt();
+      allow update: if (request.resource.data.diff(resource.data).affectedKeys().hasOnly(['selectedRole', 'hidePersonalData'])) || isCt();
     }
 
     match /lists/{list} {

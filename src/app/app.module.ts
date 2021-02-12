@@ -45,21 +45,24 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { FastEntrySheetComponent } from './components/fast-entry-sheet/fast-entry-sheet.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @NgModule({
   declarations: [
+    AdminPageComponent,
     AppComponent,
     CallbackPageComponent,
+    FastEntrySheetComponent,
+    ListEntriesPageComponent,
+    ListProtocolDialogComponent,
     ListsPageComponent,
     LoginDialogComponent,
-    RequestAccessPageComponent,
-    AdminPageComponent,
-    NewListDialogComponent,
     NewEntryDialogComponent,
-    ListEntriesPageComponent,
+    NewListDialogComponent,
     ProvideTextDialogComponent,
-    ListProtocolDialogComponent,
-    FastEntrySheetComponent,
+    RequestAccessPageComponent,
+    SettingsPageComponent,
   ],
   imports: [
     BrowserModule,
@@ -71,20 +74,21 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
     AngularFireAuthModule,
     AngularFireFunctionsModule,
-    MatToolbarModule,
-    MatDialogModule,
+    ClipboardModule,
+    MatBottomSheetModule,
     MatButtonModule,
     MatCardModule,
-    MatInputModule,
-    MatSelectModule,
-    MatListModule,
-    MatIconModule,
-    MatBottomSheetModule,
-    MatMenuModule,
-    MatSidenavModule,
-    ReactiveComponentModule,
-    ClipboardModule,
     MatCheckboxModule,
+    MatDialogModule,
+    MatIconModule,
+    MatInputModule,
+    MatListModule,
+    MatMenuModule,
+    MatSelectModule,
+    MatSidenavModule,
+    MatSlideToggleModule,
+    MatToolbarModule,
+    ReactiveComponentModule,
   ],
   providers: [
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 3000 } },

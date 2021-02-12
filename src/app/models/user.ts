@@ -1,4 +1,6 @@
 export interface User {
+  id: string;
+  roles: string[];
   hasAccess: boolean;
   country: string;
   displayName: string;
@@ -10,4 +12,7 @@ export interface User {
   sectionId: string;
   photoURL: string;
   votes: number;
+  selectedRole?: number;
+  selectedRoleText?: string;
+  hidePersonalData?: boolean;
 }

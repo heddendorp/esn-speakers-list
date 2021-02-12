@@ -23,9 +23,25 @@
         <ng-container *ngIf="entry.randomQuestion">(random)</ng-container></span
       >
       <mat-card-header>
-        <img src="{{ entry.user.photoURL }}" alt="Profile" matCardAvatar />
-        <mat-card-title>{{ entry.user.displayName }}</mat-card-title>
-        <mat-card-subtitle>{{ entry.user.section }}</mat-card-subtitle>
+        <img
+          src="{{
+            entry.user?.hidePersonalData
+              ? '/assets/images/learn/face1.png'
+              : entry.user.photoURL
+          }}"
+          alt="Profile"
+          matCardAvatar
+        />
+        <mat-card-title>
+          {{
+            entry.user?.hidePersonalData
+              ? 'Private Person'
+              : entry.user.displayName
+          }}
+        </mat-card-title>
+        <mat-card-subtitle>
+          {{ entry.user?.selectedRoleText }} ({{ entry.user.section }})
+        </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content *ngIf="entry.type !== EntryType.POLL">
         <p>
@@ -146,9 +162,22 @@
             fxLayoutGap=".5rem"
             *ngFor="let reaction of entry.reactions$ | ngrxPush; trackBy: getId"
           >
-            <img src="{{ reaction.user.photoURL }}" alt="Profile" fxHide.xs />
+            <img
+              src="{{
+                reaction.user?.hidePersonalData
+                  ? '/assets/images/learn/face1.png'
+                  : reaction.user.photoURL
+              }}"
+              alt="Profile"
+              fxHide.xs
+            />
             <div fxFlex="grow">
-              <strong>{{ reaction.user.displayName }}:&nbsp;</strong
+              <strong
+                >{{
+                  reaction.user?.hidePersonalData
+                    ? 'Private Person'
+                    : reaction.user.displayName
+                }}:&nbsp;</strong
               >{{ reaction.text }}
               <ng-container *ngIf="reaction.answer"
                 ><br /><strong>Answer:&nbsp;</strong
@@ -181,9 +210,25 @@
     <mat-card *ngFor="let entry of doneEntries$ | ngrxPush; trackBy: getId">
       <span class="tag">{{ entry.type }}</span>
       <mat-card-header>
-        <img src="{{ entry.user.photoURL }}" alt="Profile" matCardAvatar />
-        <mat-card-title>{{ entry.user.displayName }}</mat-card-title>
-        <mat-card-subtitle>{{ entry.user.section }}</mat-card-subtitle>
+        <img
+          src="{{
+            entry.user?.hidePersonalData
+              ? '/assets/images/learn/face1.png'
+              : entry.user.photoURL
+          }}"
+          alt="Profile"
+          matCardAvatar
+        />
+        <mat-card-title>
+          {{
+            entry.user?.hidePersonalData
+              ? 'Private Person'
+              : entry.user.displayName
+          }}
+        </mat-card-title>
+        <mat-card-subtitle>
+          {{ entry.user?.selectedRoleText }} ({{ entry.user.section }})
+        </mat-card-subtitle>
       </mat-card-header>
       <mat-card-content *ngIf="entry.type !== EntryType.POLL">
         <p>
@@ -248,14 +293,26 @@
             fxLayoutGap=".5rem"
             *ngFor="let reaction of entry.reactions$ | ngrxPush; trackBy: getId"
           >
-            <img src="{{ reaction.user.photoURL }}" alt="Profile" fxHide.xs />
+            <img
+              src="{{
+                reaction.user?.hidePersonalData
+                  ? '/assets/images/learn/face1.png'
+                  : reaction.user.photoURL
+              }}"
+              alt="Profile"
+              fxHide.xs
+            />
             <div fxFlex="grow">
-              <strong>{{ reaction.user.displayName }}:&nbsp;</strong
+              <strong
+                >{{
+                  reaction.user?.hidePersonalData
+                    ? 'Private Person'
+                    : reaction.user.displayName
+                }}:&nbsp;</strong
               >{{ reaction.text }}
-              <ng-container *ngIf="reaction.answer"
-                ><br /><strong>Answer:&nbsp;</strong
-                >{{ reaction.answer }}</ng-container
-              >
+              <ng-container *ngIf="reaction.answer">
+                <br /><strong>Answer:&nbsp;</strong>{{ reaction.answer }}
+              </ng-container>
             </div>
             <button
               fxFlex="noshrink"

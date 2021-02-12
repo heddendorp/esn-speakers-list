@@ -6,7 +6,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
     <h1 mat-dialog-title>Logging in ...</h1>
     <mat-dialog-content style="overflow: hidden">
       <div
-        style="width: 100%; max-height: 100%"
+        style="width: 100%; max-height: 100%; max-width: 100%"
         fxLayout="row"
         fxLayoutAlign="center center"
       >

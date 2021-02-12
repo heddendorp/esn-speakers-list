@@ -12,6 +12,7 @@ import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 import { AdminGuard } from './services/admin.guard';
 import { ListEntriesPageComponent } from './pages/list-entries-page/list-entries-page.component';
 import { RequestAccessPageComponent } from './pages/request-access-page/request-access-page.component';
+import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 
 const routes: Routes = [
   { path: 'request-access', component: RequestAccessPageComponent },
@@ -32,6 +33,12 @@ const routes: Routes = [
     canActivate: [AngularFireAuthGuard, AccessGuard],
     data: { authGuardPipe: () => redirectUnauthorizedTo(['/start']) },
     children: [{ path: ':id', component: ListEntriesPageComponent }],
+  },
+  {
+    path: 'settings',
+    component: SettingsPageComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: () => redirectUnauthorizedTo(['/start']) },
   },
   {
     path: 'start',

@@ -9,7 +9,6 @@ import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { List, User } from '../../models';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { isPlatformServer } from '@angular/common';
 import { MatSidenav } from '@angular/material/sidenav';
 
 @Component({
@@ -73,13 +72,7 @@ export class ListsPageComponent {
   }
 
   async closeSidenav(drawer: MatSidenav): Promise<void> {
-    const isHandset = await this.breakpointObserver
-      .observe(Breakpoints.Handset)
-      .pipe(
-        map((result) => result.matches),
-        first()
-      )
-      .toPromise();
+    const isHandset = await this.isHandset$.pipe(first()).toPromise();
     if (isHandset) {
       await drawer.close();
     }

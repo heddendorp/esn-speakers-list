@@ -2,11 +2,11 @@
   min-height: 100vh;
   display: block;
   position: relative;
-  //background: linear-gradient(gray, gray), url('/assets/images/background.jpg');
   background-size: cover;
-  background: url('/assets/images/background.jpg') fixed;
-  background-position: 20%;
-  //background-blend-mode: darken;
+  //background: url('/assets/images/background.jpg') fixed;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url('/assets/images/background.jpg') fixed 20%;
+  background-blend-mode: multiply;
 }
 
 header {

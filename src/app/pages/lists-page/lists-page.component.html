@@ -24,6 +24,10 @@
         <mat-icon mat-list-icon>settings</mat-icon>
         <p mat-line>Admin panel</p>
       </a>
+      <a mat-list-item routerLink="/settings">
+        <mat-icon mat-list-icon>settings</mat-icon>
+        <p mat-line>App settings</p>
+      </a>
       <a
         mat-list-item
         [routerLink]="['.', list.id]"
@@ -77,6 +81,7 @@
     <button
       mat-icon-button
       class="list-select"
+      *ngIf="outlet.isActivated"
       (click)="drawer.open()"
       [disabled]="(isHandset$ | ngrxPush) === false"
     >
@@ -85,6 +90,17 @@
     <router-outlet
       #outlet="outlet"
       (activate)="syncForm(outlet.activatedRoute)"
-    ></router-outlet>
+    >
+    </router-outlet>
+    <button
+      mat-raised-button
+      color="primary"
+      *ngIf="!outlet.isActivated"
+      style="margin: 2rem"
+      (click)="drawer.open()"
+      [disabled]="(isHandset$ | ngrxPush) === false"
+    >
+      Open available lists
+    </button>
   </mat-sidenav-content>
 </mat-sidenav-container>
