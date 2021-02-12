@@ -56,24 +56,30 @@ exports.casTicket = functions.https.onRequest(async (req, res) => {
   if (!savedUser.exists) {
     extraData = { isAdmin: false, isCt: false, hasAccess: false, votes: 0 };
   }
-  await userRef.set(
-    {
-      ...firebaseUser,
-      uid,
-      // nationality: userdata.attributes.nationality || '',
-      firstName: userdata.attributes.first,
-      lastName: userdata.attributes.last,
-      // birthday: parse(userdata.attributes.birthdate, 'dd/LL/yyyy', new Date()),
-      // gender: userdata.attributes.gender,
-      section: userdata.attributes.section,
-      sectionId: userdata.attributes.sc,
-      country: userdata.attributes.country,
-      roles: userdata.attributes.roles,
-      fullRoles: userdata.attributes.extended_roles,
-      ...extraData,
-    },
-    { merge: true }
-  );
+  try {
+    await userRef.set(
+      {
+        ...firebaseUser,
+        uid,
+        // nationality: userdata.attributes.nationality || '',
+        firstName: userdata.attributes.first,
+        lastName: userdata.attributes.last,
+        // birthday: parse(userdata.attributes.birthdate, 'dd/LL/yyyy', new Date()),
+        // gender: userdata.attributes.gender,
+        section: userdata.attributes.section,
+        sectionId: userdata.attributes.sc,
+        country: userdata.attributes.country,
+        roles: userdata.attributes.roles,
+        fullRoles: userdata.attributes.extended_roles,
+        ...extraData,
+      },
+      { merge: true }
+    );
+  } catch (e) {
+    functions.logger.error('Error when trying to save user');
+    functions.logger.error(e);
+    functions.logger.info({ firebaseUser, user });
+  }
   const token = await admin
     .auth()
     .createCustomToken(uid)
