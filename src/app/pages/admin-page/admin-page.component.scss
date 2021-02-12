@@ -3,3 +3,15 @@
   display: block;
   color: white;
 }
+
+mat-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.2);
+  border: solid 2px rgba(255, 255, 255, 0.3);
+  &.access {
+    border-color: #059669;
+  }
+  &.pending {
+    border-color: #dc2626;
+  }
+}

@@ -86,7 +86,9 @@
           >
             <h3>{{ answer.text }} ({{ answer.votes.length }} votes)</h3>
             <span *ngFor="let vote of answer.votes">
-              {{ vote.displayName }} <br />
+              <ng-container *ngIf="!vote.hidePersonalData"
+                >{{ vote.displayName }} <br
+              /></ng-container>
               <small>{{ vote.section }}</small>
             </span>
           </div>
@@ -257,7 +259,9 @@
           >
             <h3>{{ answer.text }} ({{ answer.votes.length }} votes)</h3>
             <span *ngFor="let vote of answer.votes">
-              {{ vote.displayName }} <br />
+              <ng-container *ngIf="!vote.hidePersonalData"
+                >{{ vote.displayName }} <br
+              /></ng-container>
               <small>{{ vote.section }}</small>
             </span>
           </div>

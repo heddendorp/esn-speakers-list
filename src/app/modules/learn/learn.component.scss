@@ -7,10 +7,10 @@
 
 .panel {
   color: #ecf0f1;
-  border-radius: 8px;
+  border-radius: 1rem;
   padding: 20px;
   background: rgba(255, 255, 255, 0.2);
-  border: solid 1px rgba(255, 255, 255, 0.3);
+  border: solid 2px rgba(255, 255, 255, 0.3);
   //backgroud-clip: padding-box;
   //backdrop-filter: blur(10px);
   margin-bottom: 2rem;
@@ -18,7 +18,7 @@
 
 mat-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
   border: solid 1px rgba(255, 255, 255, 0.3);
   margin-bottom: 1rem;
   span.tag {

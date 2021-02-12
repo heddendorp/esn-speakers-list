@@ -8,9 +8,17 @@
   <a mat-stroked-button routerLink="/">Go to app</a>
 </div>
 <div gdAuto gdColumns="repeat(auto-fit, minmax(350px, 1fr))" gdGap="1rem">
-  <mat-card *ngFor="let user of users$ | async">
+  <mat-card
+    *ngFor="let user of users$ | async"
+    class="{{ user.hasAccess ? 'access' : 'pending' }}"
+  >
     <mat-card-header>
-      <img src="{{ user.photoURL }}" alt="Profile" matCardAvatar />
+      <img
+        src="{{ user.photoURL }}"
+        alt="Profile"
+        matCardAvatar
+        loading="lazy"
+      />
       <mat-card-title>{{ user.displayName }}</mat-card-title>
       <mat-card-subtitle>{{ user.section }}</mat-card-subtitle>
     </mat-card-header>

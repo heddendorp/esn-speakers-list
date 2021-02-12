@@ -13,7 +13,9 @@ export class AdminPageComponent {
   public users$: Observable<User[]>;
 
   constructor(private store: AngularFirestore) {
-    this.users$ = this.store.collection<User>('users', ref => ref.orderBy('displayName', 'asc')).valueChanges();
+    this.users$ = this.store
+      .collection<User>('users', (ref) => ref.orderBy('lastName', 'asc'))
+      .valueChanges();
   }
 
   async setAccess(user: User, hasAccess: boolean): Promise<void> {

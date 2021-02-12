@@ -8,17 +8,26 @@
 
 mat-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.2);
-  border: solid 1px rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.1);
+  border: solid 2px rgba(255, 255, 255, 0.2);
+  will-change: background, border;
+  transition: all 0.3s ease-in-out;
   &.procedural {
-    background: rgb(255 162 176 / 20%);
+    background: rgb(255 162 176 / 10%);
   }
   &.poll {
-    background: rgb(102 190 255 / 20%);
+    background: rgb(102 190 255 / 10%);
   }
   &.active {
     @include mat-elevation(6);
+    background: rgba(255, 255, 255, 0.2);
     border: solid 2px rgba(255, 255, 255, 0.8);
+    &.procedural {
+      background: rgb(255 162 176 / 20%);
+    }
+    &.poll {
+      background: rgb(102 190 255 / 20%);
+    }
   }
   span.tag {
     position: absolute;
