@@ -6,7 +6,7 @@
     fxLayoutAlign="center center"
   >
     <div
-      *ngIf="hasAccess$ | async; else noAccess"
+      *ngIf="!(hasAccess$ | async); else noAccess"
       style="max-width: 400px"
       class="panel"
     >
@@ -21,6 +21,8 @@
           To participate in the speakers list you need to be approved by the
           chairing team or an administrator.
         </p>
+        <p>Meanwhile you can already configure the app to your preferences</p>
+        <a mat-raised-button routerLink="/settings">Go to settings</a>
       </div>
     </ng-template>
     <img
