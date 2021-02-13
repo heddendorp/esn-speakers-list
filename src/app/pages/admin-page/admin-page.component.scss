@@ -14,4 +14,11 @@ mat-card {
   &.pending {
     border-color: #dc2626;
   }
+  span.votes {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-weight: normal;
+    font-size: x-large;
+  }
 }

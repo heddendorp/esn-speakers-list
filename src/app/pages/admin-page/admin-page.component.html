@@ -12,6 +12,7 @@
     *ngFor="let user of users$ | async"
     class="{{ user.hasAccess ? 'access' : 'pending' }}"
   >
+    <span class="votes">{{ user.votes }}</span>
     <mat-card-header>
       <img
         src="{{ user.photoURL }}"
