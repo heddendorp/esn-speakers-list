@@ -12,6 +12,10 @@ mat-sidenav-container.mat-drawer-container {
   background: none;
 }
 
+mat-sidenav-content {
+  min-height: calc(100vh - 65px);
+}
+
 mat-sidenav {
   max-width: min(100vw, 400px);
   background: rgba(255, 255, 255, 0.2);
