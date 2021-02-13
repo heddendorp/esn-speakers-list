@@ -1,6 +1,7 @@
 export const transformRole = (raw: string): string => {
   return raw
     .replace('regular', '')
+    .replace('nationalRepresentative', 'Representative')
     .replace('IT', 'It')
     .split(/(?=[A-Z])|\./)
     .map(toTitleCase)

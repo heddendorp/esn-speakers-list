@@ -6,7 +6,7 @@
     fxLayoutAlign="center center"
   >
     <div
-      *ngIf="!(hasAccess$ | async); else noAccess"
+      *ngIf="hasAccess$ | async; else noAccess"
       style="max-width: 400px"
       class="panel"
     >

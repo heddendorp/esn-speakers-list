@@ -33,7 +33,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { ListEntriesPageComponent } from './pages/list-entries-page/list-entries-page.component';
 import { RequestAccessPageComponent } from './pages/request-access-page/request-access-page.component';
 import { ProvideTextDialogComponent } from './components/provide-text-dialog/provide-text-dialog.component';
-import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import {
+  MAT_SNACK_BAR_DEFAULT_OPTIONS,
+  MatSnackBarModule,
+} from '@angular/material/snack-bar';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 import {
   ErrorStateMatcher,
@@ -87,6 +90,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatSelectModule,
     MatSidenavModule,
     MatSlideToggleModule,
+    MatSnackBarModule,
     MatToolbarModule,
     ReactiveComponentModule,
   ],

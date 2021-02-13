@@ -67,6 +67,9 @@ body {
 
 mat-card.mat-card {
   border-radius: 0.5rem;
+  mat-card-content {
+    white-space: pre-line;
+  }
 }
 
 mat-nav-list.mat-nav-list {

@@ -1,15 +1,27 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { catchError, first, map, shareReplay, switchMap } from 'rxjs/operators';
-import { Observable, of } from 'rxjs';
+import {
+  AngularFirestore,
+  DocumentChangeAction,
+} from '@angular/fire/firestore';
+import {
+  catchError,
+  filter,
+  first,
+  map,
+  shareReplay,
+  switchMap,
+  takeUntil,
+} from 'rxjs/operators';
+import { Observable, of, Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { NewListDialogComponent } from '../../components/new-list-dialog/new-list-dialog.component';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { List, User } from '../../models';
+import { List, ListEntry, User } from '../../models';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { MatSidenav } from '@angular/material/sidenav';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-lists-page',
@@ -17,19 +29,21 @@ import { MatSidenav } from '@angular/material/sidenav';
   styleUrls: ['./lists-page.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ListsPageComponent {
+export class ListsPageComponent implements OnDestroy {
   public user$: Observable<User>;
   public lists$: Observable<List[]>;
   public isCt$: Observable<boolean>;
   isHandset$: Observable<boolean>;
   public listIdField = new FormControl();
+  private destroyed$ = new Subject();
 
   constructor(
     private breakpointObserver: BreakpointObserver,
     private auth: AuthService,
     private store: AngularFirestore,
     private dialog: MatDialog,
-    router: Router
+    private toast: MatSnackBar,
+    private router: Router
   ) {
     this.isHandset$ = this.breakpointObserver
       .observe('(max-width: 1199px)')
@@ -69,6 +83,7 @@ export class ListsPageComponent {
         }
       })
     );
+    this.attachNewEntryListener();
   }
 
   async closeSidenav(drawer: MatSidenav): Promise<void> {
@@ -131,5 +146,44 @@ export class ListsPageComponent {
     $event.stopImmediatePropagation();
     $event.stopPropagation();
     $event.preventDefault();
+  }
+
+  ngOnDestroy(): void {
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
+  }
+
+  private attachNewEntryListener() {
+    this.isCt$
+      .pipe(
+        switchMap((isCt) =>
+          isCt
+            ? this.store
+                .collectionGroup<ListEntry>('entries')
+                .stateChanges(['added'])
+            : of()
+        ),
+        filter(
+          (changes: DocumentChangeAction<ListEntry>[]) => changes.length < 3
+        ),
+        takeUntil(this.destroyed$)
+      )
+      .subscribe((newItems) => {
+        const listRef = newItems[0].payload.doc.ref.parent.parent;
+        this.store
+          .doc(listRef)
+          .valueChanges({ idField: 'id' })
+          .pipe(first())
+          .subscribe((list: List) => {
+            this.toast
+              .open(`New entry in ${list.name}!`, 'Open list', {
+                duration: 10000,
+              })
+              .onAction()
+              .subscribe(() => {
+                this.router.navigate(['/', 'lists', list.id]);
+              });
+          });
+      });
   }
 }
