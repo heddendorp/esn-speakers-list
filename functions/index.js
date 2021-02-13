@@ -69,8 +69,14 @@ exports.casTicket = functions.https.onRequest(async (req, res) => {
         section: userdata.attributes.section,
         sectionId: userdata.attributes.sc,
         country: userdata.attributes.country,
-        roles: userdata.attributes.roles,
-        fullRoles: userdata.attributes.extended_roles,
+        roles:
+          typeof userdata.attributes.roles === 'string'
+            ? [userdata.attributes.roles]
+            : userdata.attributes.roles,
+        fullRoles:
+          typeof userdata.attributes.extended_roles === 'string'
+            ? [userdata.attributes.extended_roles]
+            : userdata.attributes.extended_roles,
         ...extraData,
       },
       { merge: true }
