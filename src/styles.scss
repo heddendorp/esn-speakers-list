@@ -67,6 +67,11 @@ body {
 
 mat-card.mat-card {
   border-radius: 0.5rem;
+  mat-card-header {
+    [mat-card-avatar] {
+      object-fit: fill;
+    }
+  }
   mat-card-content {
     white-space: pre-line;
   }
