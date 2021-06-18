@@ -167,21 +167,24 @@ export class ListEntriesPageComponent {
   public async addReaction(question: ListEntry): Promise<void> {
     const list = await this.list$.pipe(first()).toPromise();
     const user = await this.user$.pipe(first()).toPromise();
-    const text = await this.dialog
+    /*const text = await this.dialog
       .open(ProvideTextDialogComponent, {
         data: { title: `Reaction to question by ${question.user.displayName}` },
       })
       .afterClosed()
-      .toPromise();
-    if (text) {
-      await this.store
-        .collection('lists')
-        .doc(list.id)
-        .collection('entries')
-        .doc(question.id)
-        .collection('reactions')
-        .add({ text, user, timestamp: new Date() });
-    }
+      .toPromise();*/
+    // if (true) {
+    const entry = { text: 'Reaction', user, timestamp: new Date() };
+    const entryRef = await this.store
+      .collection('lists')
+      .doc(list.id)
+      .collection('entries')
+      .doc(question.id)
+      .collection('reactions')
+      .add(entry);
+    const entryWithId = { ...entry, id: entryRef.id } as Reaction;
+    await this.updateText(question, entryWithId);
+    // }
   }
 
   public async addEntry(): Promise<void> {
