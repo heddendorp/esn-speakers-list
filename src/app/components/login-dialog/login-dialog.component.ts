@@ -10,7 +10,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
         fxLayout="row"
         fxLayoutAlign="center center"
       >
-        <img src="/assets/images/waiting.svg" alt="Waiting illustration" />
+        <img src="/assets/images/phone.png" alt="Waiting illustration" />
       </div>
     </mat-dialog-content>
   `,

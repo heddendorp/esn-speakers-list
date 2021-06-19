@@ -4,6 +4,10 @@
 }
 mat-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.1);
-  border: solid 1px rgba(255, 255, 255, 0.3);
+  //background: rgba(255, 255, 255, 0.1);
+  //border: solid 1px rgba(255, 255, 255, 0.3);
+  background: rgba(17, 24, 39, 0.2);
+  border: solid 2px rgba(17, 24, 39, 0.3);
+  //backgroud-clip: padding-box;
+  backdrop-filter: blur(10px);
 }

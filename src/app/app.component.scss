@@ -2,11 +2,11 @@
   min-height: 100vh;
   display: block;
   position: relative;
+  background: url('/assets/images/background.svg') fixed top;
   background-size: cover;
-  //background: url('/assets/images/background.jpg') fixed;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
-    url('/assets/images/background.jpg') fixed 20%;
-  background-blend-mode: multiply;
+  //background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+  //  url('/assets/images/background.jpg') fixed 20%;
+  //background-blend-mode: multiply;
 }
 
 header {
@@ -15,12 +15,13 @@ header {
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.6);
-  border-bottom: solid 1px rgba(255, 255, 255, 0.7);
+  background: rgba(17, 24, 39, 0.3);
+  border-bottom: solid 1px rgba(17, 24, 39, 0.7);
   backdrop-filter: blur(5px);
   padding: 0.5rem 1rem;
   h1 {
     margin: 0;
+    color: white;
   }
 }
 

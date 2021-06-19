@@ -1,4 +1,4 @@
-export const transformRole = (raw: string): string => {
+export const transformRole = (raw: string = ''): string => {
   return raw
     .replace('regular', '')
     .replace('nationalRepresentative', 'Representative')

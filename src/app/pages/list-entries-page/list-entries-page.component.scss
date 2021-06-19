@@ -8,26 +8,26 @@
 
 mat-card {
   position: relative;
-  background: rgba(255, 255, 255, 0.1);
-  border: solid 2px rgba(255, 255, 255, 0.2);
+  background: rgba(17, 24, 39, 0.3);
+  border: solid 2px rgba(17, 24, 39, 0.3);
+  backdrop-filter: blur(10px);
   will-change: background, border;
-  transition: all 0.3s ease-in-out;
+  transition: border 0.3s ease-in-out, background 0.3s ease-in-out;
+  //@include mat-elevation-transition();
   &.procedural {
-    background: rgb(255 162 176 / 10%);
+    span.tag {
+      background: #ec4899;
+    }
   }
   &.poll {
-    background: rgb(102 190 255 / 10%);
+    span.tag {
+      background: #3b82f6;
+    }
   }
   &.active {
     @include mat-elevation(6);
-    background: rgba(255, 255, 255, 0.2);
-    border: solid 2px rgba(255, 255, 255, 0.8);
-    &.procedural {
-      background: rgb(255 162 176 / 20%);
-    }
-    &.poll {
-      background: rgb(102 190 255 / 20%);
-    }
+    background: rgba(17, 24, 39, 0.4);
+    border: solid 2px rgba(17, 24, 39, 0.8);
   }
   span.tag {
     position: absolute;

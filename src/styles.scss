@@ -79,11 +79,11 @@ mat-card.mat-card {
 
 mat-nav-list.mat-nav-list {
   .mat-list-item.active {
-    background: mat-color($speakers-list-primary, lighter, 0.5);
+    background: mat-color($speakers-list-primary, lighter, 0.3);
 
     &:focus,
     &:hover {
-      background: mat-color($speakers-list-primary, lighter, 1);
+      background: mat-color($speakers-list-primary, lighter, 0.6);
     }
 
     mat-icon {
