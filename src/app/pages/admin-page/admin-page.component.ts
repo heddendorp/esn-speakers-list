@@ -11,6 +11,7 @@ import {
 import { firstValueFrom, Observable } from 'rxjs';
 import { User } from '../../models';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-admin-page',
@@ -20,6 +21,7 @@ import { map } from 'rxjs/operators';
 })
 export class AdminPageComponent {
   public users$: Observable<User[]>;
+  public production = environment.production;
 
   constructor(private firestore: Firestore) {
     this.users$ = collectionData(
