@@ -418,9 +418,9 @@ export class ListEntriesPageComponent {
       this.server,
       'recordVote'
     )({
-      listId: list.id,
-      entryId: entry.id,
-      answerId: answer.id,
+      list: list.id,
+      entry: entry.id,
+      answer: answer.id,
     });
     // const result = await this.server
     //   .httpsCallable('recordVote')({
