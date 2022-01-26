@@ -25,4 +25,9 @@ mat-card {
     font-weight: normal;
     font-size: x-large;
   }
+  mat-card-actions.mat-card-actions{
+    .mat-stroked-button{
+      margin: 0;
+    }
+  }
 }
