@@ -1,8 +1,18 @@
 import { ChangeDetectionStrategy, Component, OnDestroy } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import {
-  AngularFirestore,
-  DocumentChangeAction,
+  addDoc,
+  collection,
+  collectionChanges,
+  collectionData,
+  collectionGroup,
+  doc,
+  docData,
+  Firestore,
+  orderBy,
+  query,
+  updateDoc,
+  where,
 } from '@angular/fire/firestore';
 import {
   catchError,
@@ -13,15 +23,15 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs/operators';
-import { Observable, of, Subject } from 'rxjs';
+import { firstValueFrom, Observable, of, Subject } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { NewListDialogComponent } from '../../components/new-list-dialog/new-list-dialog.component';
 import { FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { List, ListEntry, User } from '../../models';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { List, User } from '../../models';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatSidenav } from '@angular/material/sidenav';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-lists-page',
@@ -40,7 +50,7 @@ export class ListsPageComponent implements OnDestroy {
   constructor(
     private breakpointObserver: BreakpointObserver,
     private auth: AuthService,
-    private store: AngularFirestore,
+    private firestore: Firestore,
     private dialog: MatDialog,
     private toast: MatSnackBar,
     private router: Router
@@ -59,28 +69,45 @@ export class ListsPageComponent implements OnDestroy {
     this.lists$ = auth.user$.pipe(
       switchMap((user) => {
         if (user.isCt || user.isAdmin) {
-          return store
-            .collection<List>('lists', (ref) => ref.orderBy('name'))
-            .valueChanges({ idField: 'id' })
-            .pipe(
-              catchError((err) => {
-                console.log(err);
-                return of([]);
-              })
-            );
+          return collectionData(
+            query(collection(this.firestore, 'lists'), orderBy('name')),
+            { idField: 'id' }
+          );
+          // return firestore
+          //   .collection<List>('lists', (ref) => ref.orderBy('name'))
+          //   .valueChanges({ idField: 'id' })
+          //   .pipe(
+          //     catchError((err) => {
+          //       console.log(err);
+          //       return of([]);
+          //     })
+          //   );
         } else {
-          return store
-            .collection<List>('lists', (ref) =>
-              ref.where('isVisible', '==', true).orderBy('name')
-            )
-            .valueChanges({ idField: 'id' })
-            .pipe(
-              catchError((err) => {
-                console.log(err);
-                return of([]);
-              })
-            );
+          return collectionData(
+            query(
+              collection(this.firestore, 'lists'),
+              where('isVisible', '==', true),
+              orderBy('name')
+            ),
+            { idField: 'id' }
+          );
+          // return firestore
+          //   .collection<List>('lists', (ref) =>
+          //     ref.where('isVisible', '==', true).orderBy('name')
+          //   )
+          //   .valueChanges({ idField: 'id' })
+          //   .pipe(
+          //     catchError((err) => {
+          //       console.log(err);
+          //       return of([]);
+          //     })
+          //   );
         }
+      }),
+      map((lists) => lists as List[]),
+      catchError((err) => {
+        console.log(err);
+        return of([]);
       })
     );
     this.attachNewEntryListener();
@@ -94,17 +121,24 @@ export class ListsPageComponent implements OnDestroy {
   }
 
   async createList(): Promise<void> {
-    const listName = await this.dialog
-      .open<NewListDialogComponent, any, string>(NewListDialogComponent)
-      .afterClosed()
-      .toPromise();
+    const listName = await firstValueFrom(
+      this.dialog
+        .open<NewListDialogComponent, any, string>(NewListDialogComponent)
+        .afterClosed()
+    );
     if (listName) {
-      await this.store.collection('lists').add({
+      await addDoc(collection(this.firestore, 'lists'), {
         name: listName,
         isVisible: false,
         isOpen: false,
         timestamp: new Date(),
       });
+      // await this.firestore.collection('lists').add({
+      //   name: listName,
+      //   isVisible: false,
+      //   isOpen: false,
+      //   timestamp: new Date(),
+      // });
     }
   }
 
@@ -115,31 +149,43 @@ export class ListsPageComponent implements OnDestroy {
   }
 
   async showList(list: any): Promise<void> {
-    await this.store
-      .collection('lists')
-      .doc<List>(list.id)
-      .update({ isVisible: true });
+    await updateDoc(doc(this.firestore, `lists/${list.id}`), {
+      isVisible: true,
+    });
+    // await this.firestore
+    //   .collection('lists')
+    //   .doc<List>(list.id)
+    //   .update({ isVisible: true });
   }
 
   async hideList(list: any): Promise<void> {
-    await this.store
-      .collection('lists')
-      .doc<List>(list.id)
-      .update({ isVisible: false, isOpen: false });
+    await updateDoc(doc(this.firestore, `lists/${list.id}`), {
+      isVisible: false,
+      isOpen: false,
+    });
+    // await this.firestore
+    //   .collection('lists')
+    //   .doc<List>(list.id)
+    //   .update({ isVisible: false, isOpen: false });
   }
 
   async openList(list: any): Promise<void> {
-    await this.store
-      .collection('lists')
-      .doc<List>(list.id)
-      .update({ isVisible: true, isOpen: true });
+    await updateDoc(doc(this.firestore, `lists/${list.id}`), {
+      isOpen: true,
+      isVisible: true,
+    });
+    // await this.firestore
+    //   .collection('lists')
+    //   .doc<List>(list.id)
+    //   .update({ isVisible: true, isOpen: true });
   }
 
   async closeList(list: any): Promise<void> {
-    await this.store
-      .collection('lists')
-      .doc<List>(list.id)
-      .update({ isOpen: false });
+    await updateDoc(doc(this.firestore, `lists/${list.id}`), { isOpen: false });
+    // await this.firestore
+    //   .collection('lists')
+    //   .doc<List>(list.id)
+    //   .update({ isOpen: false });
   }
 
   stopClick($event: MouseEvent) {
@@ -158,22 +204,25 @@ export class ListsPageComponent implements OnDestroy {
       .pipe(
         switchMap((isCt) =>
           isCt
-            ? this.store
-                .collectionGroup<ListEntry>('entries')
-                .stateChanges(['added'])
-            : of()
+            ? collectionChanges(collectionGroup(this.firestore, 'entries'), {
+                events: ['added'],
+              })
+            : // this.firestore
+              //     .collectionGroup<ListEntry>('entries')
+              //     .stateChanges(['added'])
+              of(null)
         ),
-        filter(
-          (changes: DocumentChangeAction<ListEntry>[]) => changes.length < 3
-        ),
+        filter((change) => change.length < 3),
         takeUntil(this.destroyed$)
       )
       .subscribe((newItems) => {
-        const listRef = newItems[0].payload.doc.ref.parent.parent;
-        this.store
-          .doc(listRef)
-          .valueChanges({ idField: 'id' })
-          .pipe(first())
+        const listRef = newItems[0].doc.ref.parent.parent;
+
+        docData(listRef, { idField: 'id' })
+          .pipe(
+            first(),
+            map((list) => list as List)
+          )
           .subscribe((list: List) => {
             this.toast
               .open(`New entry in ${list.name}!`, 'Open list', {

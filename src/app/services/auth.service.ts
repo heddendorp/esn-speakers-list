@@ -1,13 +1,19 @@
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { filter, first, map, shareReplay, switchMap } from 'rxjs/operators';
-import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { filter, map, shareReplay, switchMap } from 'rxjs/operators';
+import { firstValueFrom, Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { LoginDialogComponent } from '../components/login-dialog/login-dialog.component';
 import { Router } from '@angular/router';
 import { User } from '../models';
 import { transformRole } from '../helpers';
+import { Auth, authState, user } from '@angular/fire/auth';
+import {
+  doc,
+  docData,
+  docSnapshots,
+  Firestore,
+  updateDoc,
+} from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -17,22 +23,21 @@ export class AuthService {
   private readonly authenticated: Observable<boolean>;
 
   constructor(
-    private auth: AngularFireAuth,
+    private auth: Auth,
     private dialog: MatDialog,
     private router: Router,
-    private firestore: AngularFirestore
+    private firestore: Firestore
   ) {
-    this.authenticated = auth.authState.pipe(
+    this.authenticated = authState(this.auth).pipe(
       map((state) => !!state),
       shareReplay(1)
     );
-    this.user = auth.user.pipe(
+    this.user = user(this.auth).pipe(
       filter((user) => !!user),
       switchMap((user) =>
-        firestore
-          .collection('users')
-          .doc<User>(user.uid)
-          .valueChanges({ idField: 'id' })
+        docData(doc(this.firestore, `users/${user.uid}`), {
+          idField: 'id',
+        }).pipe(map((user) => user as User))
       ),
       map((user) => ({
         ...user,
@@ -58,8 +63,9 @@ export class AuthService {
   public async updateUser(
     update: Partial<{ selectedRole: number; hidePersonalData: boolean }>
   ) {
-    const { id } = await this.user$.pipe(first()).toPromise();
-    await this.firestore.collection<User>('users').doc(id).update(update);
+    const { id } = await firstValueFrom(this.user$);
+    await updateDoc(doc(this.firestore, `users/${id}`), update);
+    // await this.firestore.collection<User>('users').doc(id).update(update);
   }
 
   public showLoginDialog(): void {

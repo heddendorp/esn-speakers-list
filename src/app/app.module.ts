@@ -1,14 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CallbackPageComponent } from './pages/callback-page/callback-page.component';
 import { ListsPageComponent } from './pages/lists-page/lists-page.component';
-import { AngularFireModule } from '@angular/fire';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireAuthModule } from '@angular/fire/auth';
 import { environment } from '../environments/environment';
 import { LoginDialogComponent } from './components/login-dialog/login-dialog.component';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -42,7 +38,6 @@ import {
   ErrorStateMatcher,
   ShowOnDirtyErrorStateMatcher,
 } from '@angular/material/core';
-import { AngularFireFunctionsModule } from '@angular/fire/functions';
 import { ListProtocolDialogComponent } from './components/list-protocol-dialog/list-protocol-dialog.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -50,6 +45,10 @@ import { FastEntrySheetComponent } from './components/fast-entry-sheet/fast-entr
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { SettingsPageComponent } from './pages/settings-page/settings-page.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getAuth, provideAuth } from '@angular/fire/auth';
+import { getFunctions, provideFunctions } from '@angular/fire/functions';
 
 @NgModule({
   declarations: [
@@ -73,10 +72,14 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     BrowserAnimationsModule,
     ReactiveFormsModule,
     FlexLayoutModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
-    AngularFireAuthModule,
-    AngularFireFunctionsModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore()),
+    provideAuth(() => getAuth()),
+    provideFunctions(() => getFunctions()),
+    // AngularFireModule.initializeApp(environment.firebase),
+    // AngularFirestoreModule.enablePersistence({ synchronizeTabs: true }),
+    // AngularFireAuthModule,
+    // AngularFireFunctionsModule,
     ClipboardModule,
     MatBottomSheetModule,
     MatButtonModule,

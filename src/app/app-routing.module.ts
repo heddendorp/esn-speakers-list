@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { CallbackPageComponent } from './pages/callback-page/callback-page.component';
 import { ListsPageComponent } from './pages/lists-page/lists-page.component';
 import {
-  AngularFireAuthGuard,
+  AuthGuard,
   redirectLoggedInTo,
   redirectUnauthorizedTo,
 } from '@angular/fire/auth-guard';
@@ -24,20 +24,20 @@ const routes: Routes = [
   {
     path: 'callback',
     component: CallbackPageComponent,
-    canActivate: [AngularFireAuthGuard],
+    canActivate: [AuthGuard],
     data: { authGuardPipe: () => redirectLoggedInTo(['/lists']) },
   },
   {
     path: 'lists',
     component: ListsPageComponent,
-    canActivate: [AngularFireAuthGuard, AccessGuard],
+    canActivate: [AuthGuard, AccessGuard],
     data: { authGuardPipe: () => redirectUnauthorizedTo(['/start']) },
     children: [{ path: ':id', component: ListEntriesPageComponent }],
   },
   {
     path: 'settings',
     component: SettingsPageComponent,
-    canActivate: [AngularFireAuthGuard],
+    canActivate: [AuthGuard],
     data: { authGuardPipe: () => redirectUnauthorizedTo(['/start']) },
   },
   {
@@ -54,7 +54,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

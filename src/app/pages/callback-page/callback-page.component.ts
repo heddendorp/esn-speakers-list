@@ -1,7 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AngularFireAuth } from '@angular/fire/auth';
-import firebase from 'firebase/app';
+import {
+  Auth,
+  browserLocalPersistence,
+  setPersistence,
+  signInWithCustomToken,
+} from '@angular/fire/auth';
 
 @Component({
   selector: 'app-callback-page',
@@ -10,21 +14,21 @@ import firebase from 'firebase/app';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CallbackPageComponent {
-  constructor(
-    route: ActivatedRoute,
-    fireAuth: AngularFireAuth,
-    router: Router
-  ) {
+  constructor(route: ActivatedRoute, private auth: Auth, router: Router) {
     const token = route.snapshot.queryParamMap.get('token');
     if (!token) {
       router.navigate(['/start']);
     }
-    fireAuth
-      .setPersistence(firebase.auth.Auth.Persistence.SESSION)
-      .then(() =>
-        fireAuth
-          .signInWithCustomToken(token)
-          .then(() => router.navigate(['/lists']))
-      );
+    // setPersistence(this.auth, browserLocalPersistence).then(() => {
+    signInWithCustomToken(this.auth, token).then(() =>
+      router.navigate(['/lists'])
+    );
+    // });
+    // auth
+    //   .setPersistence(firebase.auth.Auth.Persistence.SESSION)
+    //   .then(() =>
+    //     signInWithCustomToken(this.auth, token)
+    //       .then(() => router.navigate(['/lists']))
+    //   );
   }
 }
