@@ -64,6 +64,10 @@ export class AdminPageComponent {
   }
 
   async resetApp() {
+    const result = confirm('You are about to reset the app!');
+    if (!result) {
+      return;
+    }
     const users = await firstValueFrom(
       collectionData(collection(this.firestore, 'users'))
     );
